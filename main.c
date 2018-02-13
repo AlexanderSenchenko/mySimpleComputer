@@ -14,5 +14,14 @@ int main()
 	//sc_memoryLoad("Test");
 	//sc_memoryPrint();
 
+	sc_regInit();
+	sc_regFlagPrint();
+
+	sc_regSet(B, 1);
+	sc_regFlagPrint();
+	int value;
+	sc_regGet(B, &value);
+	printf("%d\n", value);
+
 	return 0;
 }

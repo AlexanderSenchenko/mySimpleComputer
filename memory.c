@@ -49,23 +49,6 @@ int sc_memoryLoad(char *filename)
 	return 0;
 }
 
-int sc_regInit()
-{
-	registr = 0;
-	return 0;
-}
-
-int sc_regSet(int value)
-{
-	registr = registr | value;
-	return 0;
-}
-
-int sc_regGet(int *value)
-{
-
-}
-
 int sc_memoryPrint()
 {
 	for (int i = 0; i < 10; i++) {
@@ -74,5 +57,75 @@ int sc_memoryPrint()
 		}
 		printf("\n");
 	}
+	return 0;
+}
+
+int sc_regInit()
+{
+	flag = 0;
+	return 0;
+}
+
+int sc_regSet(int reg, int value)
+{
+	if (reg == A || reg == B || reg == C || reg == F || reg == G) {
+		if (value == 0) {
+			flag = flag & ~reg;
+		} else if (value == 1) {
+			flag = flag | reg;
+		} else {
+			return 0;
+		}
+	}
+	return 0;
+}
+
+int sc_regGet(int reg, int *value)
+{
+	if (reg == A || reg == B || reg == C || reg == F || reg == G) {
+		if ((flag & reg) != 0) {
+			*value = 1;
+		} else {
+			*value = 0;
+		}
+	}
+	return 0;
+}
+
+int sc_commandEncode(int command, int operand, int *value)
+{
+	if (command < 0x10 
+		|| (command > 0x11 && command < 0x20) 
+		|| (command > 0x21 && command < 0x30)
+		|| (command > 0x33 && command < 0x40)
+		|| (command > 0x43 && command < 0x51)
+		|| command > 0x76)
+	{
+		return 1;
+	}
+
+	if (operand > 127 || operand < 0) {
+		return 1;
+	}
+
+	*value = (command << 7) | operand;
+
+	return 0;
+}
+
+int sc_commandDecode(int value, int *command, int *operand)
+{
+	if ((value >> 14) != 0) {
+		return 1;
+	}
+
+	*command = value >> 7;
+	*operand = value & 0x7F;
+	return 0;
+}
+
+int sc_regFlagPrint()
+{
+	printf("%d\n", flag);
 	return 0;
 }
