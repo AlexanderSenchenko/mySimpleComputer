@@ -94,12 +94,12 @@ int sc_regGet(int reg, int *value)
 
 int sc_commandEncode(int command, int operand, int *value)
 {
-	if (command < 0x10 
-		|| (command > 0x11 && command < 0x20) 
-		|| (command > 0x21 && command < 0x30)
-		|| (command > 0x33 && command < 0x40)
-		|| (command > 0x43 && command < 0x51)
-		|| command > 0x76)
+	if (command < 10 
+		|| (command > 11 && command < 20) 
+		|| (command > 21 && command < 30)
+		|| (command > 33 && command < 40)
+		|| (command > 43 && command < 51)
+		|| command > 76)
 	{
 		return 1;
 	}
