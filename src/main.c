@@ -8,7 +8,7 @@ int main()
 
 	sc_memoryPrint();
 
-	sc_memorySave("Test.bin");
+	//sc_memorySave("Test.bin");
 	//sc_memoryInit();
 	//sc_memoryPrint();
 	//sc_memoryLoad("Test");
