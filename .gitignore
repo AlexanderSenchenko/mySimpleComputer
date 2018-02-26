@@ -1,4 +1,4 @@
-bin/memory
+bin/
 build/*.o
 lib/*.a
 *.bin
