@@ -1,26 +1,41 @@
-all: bin/memory
+BIN_NAME := memory
+LIB_NAME := libmemory
 
-bin/memory: build/main.o lib/libmemory.a bin
-	gcc -Wall build/main.o lib/libmemory.a -o bin/memory
+SRC_PATH := src
+BIN_PATH := bin
+LIB_PATH := ~/mylib
+BUILD_PATH := build
 
-build/main.o: src/main.c src/memory.h build
-	gcc -Wall -c src/main.c -o build/main.o
+all: $(BIN_PATH)/$(BIN_NAME)
 
-lib/libmemory.a: build/memory.o lib
-	ar rcs lib/libmemory.a build/memory.o
+$(BIN_PATH)/$(BIN_NAME): $(BUILD_PATH)/main.o $(LIB_PATH)/$(LIB_NAME).a $(BIN_PATH)
+	gcc -Wall $< $(LIB_PATH)/$(LIB_NAME).a -o $@
 
-build/memory.o: src/memory.c src/memory.h build
-	gcc -Wall -c src/memory.c -o build/memory.o
+$(BUILD_PATH)/%.o: $(SRC_PATH)/%.c $(SRC_PATH)/memory.h $(BUILD_PATH)
+	gcc -Wall -c $< -o $@
 
-build:
-	mkdir build
+$(LIB_PATH)/libmemory.a: $(BUILD_PATH)/memory.o $(LIB_PATH)
+	ar rcs $@ $<
 
-lib:
-	mkdir lib
+$(BUILD_PATH)/%.o: $(SRC_PATH)/%.c $(SRC_PATH)/%.h $(BUILD_PATH)
+	gcc -Wall -c $< -o $@
 
-bin:
-	mkdir bin
+#-include &(wildcard *.d)
+
+$(BUILD_PATH):
+	@mkdir -p $(BUILD_PATH)
+
+$(BIN_PATH):
+	@mkdir -p $(BIN_PATH)
+
+$(LIB_PATH):
+	@mkdir -p $(LIB_PATH)
 
 .PHONY: clean
 clean:
-	rm -rf build/*.o
+	rm -rf $(BUILD_PATH)
+	rm -rf $(BIN_PATH)
+
+.PHONY: clean_lib
+clean_lib:
+	rm -rf $(LIB_PATH)/$(LIB_NAME).a
