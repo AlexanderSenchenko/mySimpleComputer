@@ -9,7 +9,23 @@ int bc_printA(char* str)
 
 int bc_box(int x1, int y1, int x2, int y2)
 {
+	if (x1 < 0 || y1 < 0) {
+		return -1;
+	}
+
 	mt_clrscr();
+
+	///*
+	mt_gotoXY(x1 - 1, y1);
+	for (int i = 0; i < y2; i++) {
+		printf("%d", i);
+	}
+
+	for (int i = x1; i <  x1 + x2; i++) {
+		mt_gotoXY(i, y1 - 1);
+		printf("%d", i - x1);
+	}
+	//*/
 
 	mt_gotoXY(x1, y1);
 	bc_printA(BC_ANGLE_LEFT_UP);
@@ -49,6 +65,12 @@ int bc_box(int x1, int y1, int x2, int y2)
 
 int bc_printbigchar(int a[2], int x, int y, enum colors f_color, enum colors b_color)
 {
+	if (x < 0 || y < 0) {
+		return -1;
+	}
+
+	mt_ssetfgcolor(f_color);
+	mt_ssetbgcolor(b_color);
 	for (int i = 0; i < 2; i++) {
 
 		int a_buf = a[i];
@@ -57,34 +79,56 @@ int bc_printbigchar(int a[2], int x, int y, enum colors f_color, enum colors b_c
 			int buf;
 
 			a_buf = a[i] >> (j * 8);
-			buf = a_buf & 0b11111111;
+			buf = a_buf & 0xFF;
 
 			for (int k = 0; k < 8; k++) {
-				int buf_bit = (buf & (0b00000001 << k)) >> k;
+				int buf_bit = (buf & (1 << k)) >> k;
 				mt_gotoXY(x + (i * 4) + j, y + k);
 				//printf("%d\n", buf_bit);
 				if (buf_bit != 0) {
-					mt_ssetfgcolor(f_color);
-					mt_ssetbgcolor(b_color);
 					bc_printA(BC_CAGED_CELL);
-					mt_stopcolor();
 				}
-				
 			}
 		}
 	}
+	mt_stopcolor();
 
 	mt_gotoXY(18, 0);
 	return 0;
 }
 
-int bc_setbigcharpos(int *big, int x, int y, int *value)
+int bc_setbigcharpos(int *big, int x, int y, int value)
 {
+	if (x < 0 || x > 7 || y < 0 || y > 7 || value > 1 || value < 0) {
+		return -1;
+	}
+
+	int ind = 0;
+	if (x > 3)
+		ind = 1;
+
+
+	if (value == 1) {
+		big[ind] |= 1 << (x * 8 + y);
+	} else if (value == 0) {
+		big[ind] &= ~(1 << (x * 8 + y));
+	}
+
 	return 0;
 }
 
 int bc_getbigcharpos(int *big, int x, int y, int *value)
 {
+	if (x < 0 || x > 7 || y < 0 || y > 7) {
+		return -1;
+	}
+
+	int ind = 0;
+	if (x > 3)
+		ind = 1;
+
+	*value = ((big[ind] >> (x * 8)) >> y) & 1;
+
 	return 0;
 }
 

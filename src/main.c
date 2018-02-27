@@ -59,9 +59,29 @@ int main()
 	*/
 
 	int a[2] = {1010315264, 3158064};
+	int value;
 	
 	bc_box(10, 5, 8, 8);
 	bc_printbigchar(a, 10, 5, purple, cyan);
+
+	bc_setbigcharpos(a, 1, 4, 0);
+	bc_setbigcharpos(a, 1, 3, 1);
+	bc_printbigchar(a, 10, 15, purple, cyan);
+
+	bc_getbigcharpos(a, 1, 4, &value);
+	printf("Value = %d\n", value);
+
+	int fd = open("BigChar.txt", O_WRONLY);
+	if (isatty(fd)) {
+		printf("%s\n", ttyname(fd));
+	} else {
+		printf("Kek!!!!!\n");
+	}
+	int count = 0;
+
+	bc_bigcharwrite(fd, a, count);
+	//bc_bigcharread(fd, *big, need_count, *count);
+	close(fd);
 
 	return 0;
 }
