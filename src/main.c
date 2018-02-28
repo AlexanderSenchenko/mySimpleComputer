@@ -58,6 +58,7 @@ int main()
 	mt_stopcolor();
 	*/
 
+	mt_clrscr();
 	int a[2] = {1010315264, 3158064};
 	int value;
 	
@@ -72,16 +73,18 @@ int main()
 	printf("Value = %d\n", value);
 
 	int fd = open("BigChar.txt", O_WRONLY);
-	if (isatty(fd)) {
-		printf("%s\n", ttyname(fd));
-	} else {
-		printf("Kek!!!!!\n");
-	}
-	int count = 0;
+	int count = 10;
 
 	bc_bigcharwrite(fd, a, count);
 	//bc_bigcharread(fd, *big, need_count, *count);
 	close(fd);
+
+	/*mt_clrscr();
+	sc_memoryInit();
+	bc_box(1, 1, 12, 62);
+	mt_gotoXY(2, 2);
+	sc_memoryPrint();*/
+	
 
 	return 0;
 }

@@ -1,6 +1,8 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
+#include "myTerm.h"
+
 #define SIZE 100
 
 #define A 0b00000001//переполнение при выполнение операции

@@ -13,7 +13,7 @@ int bc_box(int x1, int y1, int x2, int y2)
 		return -1;
 	}
 
-	mt_clrscr();
+	//mt_clrscr();
 
 	///*
 	mt_gotoXY(x1 - 1, y1);
@@ -131,11 +131,31 @@ int bc_getbigcharpos(int *big, int x, int y, int *value)
 
 	return 0;
 }
-
+/*
 int bc_bigcharwrite(int fd, int *big, int count)
 {
+	char BigChar[2 * 4 * 8];
+	for (int i = 0; i < 2; i++) {
+
+		int a_buf = big[i];
+
+		for (int j = 0; j < 4; j++) {
+			int buf;
+
+			a_buf = big[i] >> (j * 8);
+			buf = a_buf & 0xFF;
+
+			for (int k = 0; k < 8; k++) {
+				int buf_bit = (buf & (1 << k)) >> k;
+				if (buf_bit != 0) {
+					BigChar[z] = BC_CAGED_CELL;
+				}
+			}
+		}
+	}
+	write(fd, BigChar, count);
 	return 0;
-}
+}*/
 
 int bc_bigcharread(int fd, int *big, int need_count, int *count)
 {
