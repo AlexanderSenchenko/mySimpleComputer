@@ -12,7 +12,7 @@
 #define	BC_ANGLE_RIGHT_DOWN "j"
 #define	BC_LINE_VERTICAL "x"
 #define	BC_LINE_HORIZONTAL "q"
-#define	BC_CAGED_CELL 'a'
+#define	BC_CAGED_CELL "a"
 
 int bc_printA(char* str);
 int bc_box(int x1, int y1, int x2, int y2);

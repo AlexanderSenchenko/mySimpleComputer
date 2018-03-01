@@ -69,6 +69,9 @@ int bc_printbigchar(int a[2], int x, int y, enum colors f_color, enum colors b_c
 		return -1;
 	}
 
+	char str[8] = { 0 };
+	//int count = 0;
+
 	mt_ssetfgcolor(f_color);
 	mt_ssetbgcolor(b_color);
 	for (int i = 0; i < 2; i++) {
@@ -83,12 +86,21 @@ int bc_printbigchar(int a[2], int x, int y, enum colors f_color, enum colors b_c
 
 			for (int k = 0; k < 8; k++) {
 				int buf_bit = (buf & (1 << k)) >> k;
-				mt_gotoXY(x + (i * 4) + j, y + k);
+				//mt_gotoXY(x + (i * 4) + j, y + k);
 				//printf("%d\n", buf_bit);
 				if (buf_bit != 0) {
-					bc_printA(BC_CAGED_CELL);
+					//bc_printA(BC_CAGED_CELL);
+					//mt_ssetfgcolor(f_color);
+					//mt_ssetbgcolor(b_color);
+					str[k] = BC_CAGED_CELL[0];
+					//mt_stopcolor();
+				} else {
+					str[k] = ' ';	
 				}
+				//count++;
 			}
+			mt_gotoXY(x + (i * 4) + j, y);
+			bc_printA(str);
 		}
 	}
 	mt_stopcolor();
@@ -131,31 +143,12 @@ int bc_getbigcharpos(int *big, int x, int y, int *value)
 
 	return 0;
 }
-/*
+
 int bc_bigcharwrite(int fd, int *big, int count)
 {
-	char BigChar[2 * 4 * 8];
-	for (int i = 0; i < 2; i++) {
-
-		int a_buf = big[i];
-
-		for (int j = 0; j < 4; j++) {
-			int buf;
-
-			a_buf = big[i] >> (j * 8);
-			buf = a_buf & 0xFF;
-
-			for (int k = 0; k < 8; k++) {
-				int buf_bit = (buf & (1 << k)) >> k;
-				if (buf_bit != 0) {
-					BigChar[z] = BC_CAGED_CELL;
-				}
-			}
-		}
-	}
-	write(fd, BigChar, count);
+	
 	return 0;
-}*/
+}
 
 int bc_bigcharread(int fd, int *big, int need_count, int *count)
 {
