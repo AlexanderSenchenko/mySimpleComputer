@@ -3,6 +3,127 @@
 #include "myTerm.h"
 #include "myBigChars.h"
 
+#define BOX_ROW_MEMORY 12
+#define BOX_COLUMN_MEMORY 61
+
+int m_printMemory()
+{
+	sc_memoryInit();
+	bc_box(1, 1, BOX_ROW_MEMORY, BOX_COLUMN_MEMORY);//box memory
+	mt_printterm();
+
+	return 0;
+}
+
+int m_printAccumulator()
+{
+	int accumulator = 9999;
+	int column = 22;
+	int row = 3;
+
+	bc_box(1, BOX_COLUMN_MEMORY + 1, row, column);//box accumulator
+	mt_gotoXY(1, 67);
+	printf(" accumulator ");
+	mt_gotoXY(2, 70);
+	printf("+%d", accumulator);
+
+	return 0;
+}
+
+int m_printInstructionCounter()
+{
+	int instructionCounter = 0;
+	int column = 22;
+	int row = 3;
+
+	bc_box(4, BOX_COLUMN_MEMORY + 1, row, column);//box instructionCounter
+	mt_gotoXY(4, 63);
+	printf(" instructionCounter ");
+	mt_gotoXY(5, 70);
+	printf("+%.4d", instructionCounter);
+
+	return 0;
+}
+
+int m_printOperation()
+{
+	int column = 22;
+	int row = 3;
+
+	bc_box(7, BOX_COLUMN_MEMORY + 1, row, column);//box operation
+	mt_gotoXY(7, 68);
+	printf(" Operation ");
+	mt_gotoXY(8, 69);
+	printf("+00 : 00");
+
+	return 0;
+}
+
+int m_printFlags()
+{
+	int column = 22;
+	int row = 3;
+	int value_a, value_b, value_c, value_f, value_g;
+
+	sc_regGet(A, &value_a);
+	sc_regGet(B, &value_b);
+	sc_regGet(C, &value_c);
+	sc_regGet(F, &value_f);
+	sc_regGet(G, &value_g);
+
+	bc_box(10, BOX_COLUMN_MEMORY + 1, row, column);//box flags
+	mt_gotoXY(10, 69);
+	printf(" Flags ");
+	mt_gotoXY(11, 64);
+	printf("A-%d B-%d C-%d F-%d G-%d", 
+		value_a, value_b, value_c, value_f, value_g);
+
+	return 0;
+}
+
+int m_printCase()
+{
+	int column = 46;
+	int row = 10;
+	int bcint9 [2] = {2087074816, 3956832};
+	int bcintp [2] = {2115508224, 1579134};
+
+	bc_box(BOX_ROW_MEMORY + 1, 1, row, column);//box case
+
+	bc_printbigchar(bcintp, BOX_ROW_MEMORY + 2, 2, purple, cyan);
+	bc_printbigchar(bcint9, BOX_ROW_MEMORY + 2, 11, purple, cyan);
+	bc_printbigchar(bcint9, BOX_ROW_MEMORY + 2, 20, purple, cyan);
+	bc_printbigchar(bcint9, BOX_ROW_MEMORY + 2, 29, purple, cyan);
+	bc_printbigchar(bcint9, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+
+	return 0;
+}
+
+int m_printKeys()
+{
+	int column = 37;
+	int row = 10;
+
+	bc_box(13, 47, row, column);//box keys
+	mt_gotoXY(13, 48);
+	printf(" Keys: ");
+	mt_gotoXY(14, 48);
+	printf("l   - load");
+	mt_gotoXY(15, 48);
+	printf("s   - save");
+	mt_gotoXY(16, 48);
+	printf("r   - run");
+	mt_gotoXY(17, 48);
+	printf("t   - step");
+	mt_gotoXY(18, 48);
+	printf("i   - reset");
+	mt_gotoXY(19, 48);
+	printf("F5  - accumulator");
+	mt_gotoXY(20, 48);
+	printf("F6  - instructionCounter");
+	return 0;
+}
+
 int main()
 {
 	/*
@@ -58,6 +179,7 @@ int main()
 	mt_stopcolor();
 	*/
 
+	/*
 	mt_clrscr();
 	int a[2] = {1010315264, 3158064};
 	int value;
@@ -71,20 +193,28 @@ int main()
 
 	bc_getbigcharpos(a, 1, 4, &value);
 	printf("Value = %d\n", value);
+	*/
 
+	/*
 	int fd = open("BigChar.txt", O_WRONLY);
-	int count = 10;
+	int count = 8;
 
 	bc_bigcharwrite(fd, a, count);
 	//bc_bigcharread(fd, *big, need_count, *count);
 	close(fd);
+	*/
 
-	/*mt_clrscr();
-	sc_memoryInit();
-	bc_box(1, 1, 12, 62);
-	mt_gotoXY(2, 2);
-	sc_memoryPrint();*/
+	mt_clrscr();
+
+	m_printMemory();
+	m_printAccumulator();
+	m_printInstructionCounter();
+	m_printOperation();
+	m_printFlags();
+	m_printCase();
+	m_printKeys();
+
+	mt_gotoXY(23, 1);
 	
-
 	return 0;
 }

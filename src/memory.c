@@ -49,18 +49,6 @@ int sc_memoryLoad(char *filename)
 	return 0;
 }
 
-int sc_memoryPrint()
-{
-	for (int i = 0; i < 10; i++) {
-		mt_gotoXY(1 + i, 1);
-		for (int j = 0; j < 10; j++) {
-			printf(" +%.4d", memory[i * 10 + j]);
-		}
-		printf("\n");
-	}
-	return 0;
-}
-
 int sc_regInit()
 {
 	flag = 0;

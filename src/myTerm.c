@@ -1,4 +1,5 @@
 #include "myTerm.h"
+//#include "myBigChars.h"
 #include <stdio.h>
 
 int mt_clrscr()
@@ -47,6 +48,27 @@ int mt_ssetbgcolor(enum colors color)
 int mt_stopcolor()
 {
 	printf("\E[0m");
+
+	return 0;
+}
+
+int mt_printterm()
+{
+	//bc_box(1, 1, 12, 61);
+	mt_gotoXY(1, 28);
+	printf(" Memory ");
+	for (int i = 0; i < 10; i++) {
+		mt_gotoXY(2 + i, 2);
+		for (int j = 0; j < 10; j++) {
+			//mt_gotoXY(2 + i, 2 + j * 5);
+			if (j != 0) {
+				printf(" ");
+			}
+			printf("+%.4d", memory[i * 10 + j]);
+		}
+		printf("\n");
+	}
+	//printf("\n");
 
 	return 0;
 }
