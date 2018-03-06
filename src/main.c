@@ -6,6 +6,9 @@
 #define BOX_ROW_MEMORY 12
 #define BOX_COLUMN_MEMORY 61
 
+#define MINI_BOX_ROW 3
+#define MINI_BOX_COLUMN 22
+
 int m_printMemory()
 {
 	sc_memoryInit();
@@ -18,10 +21,8 @@ int m_printMemory()
 int m_printAccumulator()
 {
 	int accumulator = 9999;
-	int column = 22;
-	int row = 3;
 
-	bc_box(1, BOX_COLUMN_MEMORY + 1, row, column);//box accumulator
+	bc_box(1, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);//box accumulator
 	mt_gotoXY(1, 67);
 	printf(" accumulator ");
 	mt_gotoXY(2, 70);
@@ -33,10 +34,8 @@ int m_printAccumulator()
 int m_printInstructionCounter()
 {
 	int instructionCounter = 0;
-	int column = 22;
-	int row = 3;
 
-	bc_box(4, BOX_COLUMN_MEMORY + 1, row, column);//box instructionCounter
+	bc_box(4, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);//box instructionCounter
 	mt_gotoXY(4, 63);
 	printf(" instructionCounter ");
 	mt_gotoXY(5, 70);
@@ -47,10 +46,7 @@ int m_printInstructionCounter()
 
 int m_printOperation()
 {
-	int column = 22;
-	int row = 3;
-
-	bc_box(7, BOX_COLUMN_MEMORY + 1, row, column);//box operation
+	bc_box(7, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);//box operation
 	mt_gotoXY(7, 68);
 	printf(" Operation ");
 	mt_gotoXY(8, 69);
@@ -61,8 +57,6 @@ int m_printOperation()
 
 int m_printFlags()
 {
-	int column = 22;
-	int row = 3;
 	int value_a, value_b, value_c, value_f, value_g;
 
 	sc_regGet(A, &value_a);
@@ -71,7 +65,7 @@ int m_printFlags()
 	sc_regGet(F, &value_f);
 	sc_regGet(G, &value_g);
 
-	bc_box(10, BOX_COLUMN_MEMORY + 1, row, column);//box flags
+	bc_box(10, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);//box flags
 	mt_gotoXY(10, 69);
 	printf(" Flags ");
 	mt_gotoXY(11, 64);
@@ -124,23 +118,33 @@ int m_printKeys()
 	return 0;
 }
 
-int main()
+int m_printAll()
 {
-	/*
-	//memory
+	mt_clrscr();
+
+	m_printMemory();
+	m_printAccumulator();
+	m_printInstructionCounter();
+	m_printOperation();
+	m_printFlags();
+	m_printCase();
+	m_printKeys();
+
+	mt_gotoXY(23, 1);
+
+	return 0;
+}
+
+int test_memory()
+{
 	int value;
 	sc_memoryInit();
 	sc_memorySet(4, 24);
 	sc_memoryGet(5, &value);
 	printf("%d\n", value);
 
-	sc_memoryPrint();
-
 	sc_memorySave("Test.bin");
-	//sc_memoryInit();
-	//sc_memoryPrint();
 	//sc_memoryLoad("Test");
-	//sc_memoryPrint();
 
 	sc_regInit();
 	sc_regFlagPrint();
@@ -153,10 +157,11 @@ int main()
 	
 	sc_regGet(B, &value);
 	printf("Reg B %d\n", value);
-	*/
+	return 0;
+}
 
-	/*
-	//term
+int test_term()
+{
 	mt_clrscr();
 
 	mt_gotoXY(10, 10);
@@ -177,9 +182,12 @@ int main()
 	printf("Test\n");
 
 	mt_stopcolor();
-	*/
 
-	/*
+	return 0;
+}
+
+int test_bigchar()
+{
 	mt_clrscr();
 	int a[2] = {1010315264, 3158064};
 	int value;
@@ -193,7 +201,6 @@ int main()
 
 	bc_getbigcharpos(a, 1, 4, &value);
 	printf("Value = %d\n", value);
-	*/
 
 	/*
 	int fd = open("BigChar.txt", O_WRONLY);
@@ -204,17 +211,15 @@ int main()
 	close(fd);
 	*/
 
-	mt_clrscr();
+	return 0;
+}
 
-	m_printMemory();
-	m_printAccumulator();
-	m_printInstructionCounter();
-	m_printOperation();
-	m_printFlags();
-	m_printCase();
-	m_printKeys();
+int main()
+{
+	//test_memory();
+	//test_term();
+	test_bigchar();
+	//m_printAll();
 
-	mt_gotoXY(23, 1);
-	
 	return 0;
 }

@@ -147,49 +147,7 @@ int bc_getbigcharpos(int *big, int x, int y, int *value)
 int bc_bigcharwrite(int fd, int *big, int count)
 {
 	
-	//char str[8] = { 0 };
-	/*
-	for (int i = 0; i < 2; i++) {
 
-		int a_buf = big[i];
-
-		for (int j = 0; j < 4; j++) {
-			int buf;
-
-			a_buf = big[i] >> (j * 8);
-			buf = a_buf & 0xFF;
-
-			for (int k = 0; k < 8; k++) {
-				int buf_bit = (buf & (1 << k)) >> k;
-				//mt_gotoXY(x + (i * 4) + j, y + k);
-				//printf("%d\n", buf_bit);
-				if (buf_bit != 0) {
-					//bc_printA(BC_CAGED_CELL);
-					//mt_ssetfgcolor(f_color);
-					//mt_ssetbgcolor(b_color);
-					str[k] = BC_CAGED_CELL[0];
-					//mt_stopcolor();
-				} else {
-					str[k] = ' ';	
-				}
-				//count++;
-			}
-			//mt_gotoXY(x + (i * 4) + j, y);
-			//bc_printA(str);
-			write(fd, str, count);
-		}
-	}
-	*/
-
-	if (!big) {
-		return -1;
-	}
-	while (count > 0) {
-		if (write(fd, big, sizeof(int) * 2) == -1) {
-			return -1;
-		}
-		count--;
-	}
 	return 0;
 }
 
