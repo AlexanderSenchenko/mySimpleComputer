@@ -146,12 +146,40 @@ int bc_getbigcharpos(int *big, int x, int y, int *value)
 
 int bc_bigcharwrite(int fd, int *big, int count)
 {
-	
+	if (!big || fd < 0) {
+		return -1;
+	}
+
+	while (count > 0) {
+		int result;
+		if ((result = write(fd, big, sizeof(int) * 2)) == -1) {
+			return -1;
+		}
+		//printf("%d\n", result);
+		count--;
+	}
 
 	return 0;
 }
 
 int bc_bigcharread(int fd, int *big, int need_count, int *count)
 {
+	if (fd < 0) {
+		return -1;
+	}
+
+	while (need_count > 0) {
+		int result;
+		if ((result = read(fd, big, sizeof(int) * 2)) == -1) {
+			return -1;
+		}
+		//printf("%d\n", result);
+		//if (result != sizeof(int) * 2) {
+		//	return 0;
+		//}
+		need_count--;
+		*count = *count + 1;
+	}
+
 	return 0;
 }

@@ -202,14 +202,25 @@ int test_bigchar()
 	bc_getbigcharpos(a, 1, 4, &value);
 	printf("Value = %d\n", value);
 
-	/*
+	
 	int fd = open("BigChar.txt", O_WRONLY);
-	int count = 8;
+	int count = 0;
 
-	bc_bigcharwrite(fd, a, count);
-	//bc_bigcharread(fd, *big, need_count, *count);
+	int *big = malloc(sizeof(int) * 1);
+	big[0] = 0;
+	big[1] = 0;
+
+	bc_bigcharwrite(fd, a, 1);
 	close(fd);
-	*/
+
+	fd = open("BigChar.txt", O_RDONLY);
+	bc_bigcharread(fd, big, 1, &count);
+	printf("%d\n", big[0]);
+	printf("%d\n", big[1]);
+	printf("%d\n", count);
+	close(fd);
+
+	free(big);
 
 	return 0;
 }
