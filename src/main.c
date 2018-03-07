@@ -2,6 +2,7 @@
 #include "memory.h"
 #include "myTerm.h"
 #include "myBigChars.h"
+#include "myReadkey.h"
 
 #define BOX_ROW_MEMORY 12
 #define BOX_COLUMN_MEMORY 61
@@ -12,7 +13,7 @@
 int m_printMemory()
 {
 	sc_memoryInit();
-	bc_box(1, 1, BOX_ROW_MEMORY, BOX_COLUMN_MEMORY);//box memory
+	bc_box(1, 1, BOX_ROW_MEMORY, BOX_COLUMN_MEMORY);
 	mt_printterm();
 
 	return 0;
@@ -22,7 +23,7 @@ int m_printAccumulator()
 {
 	int accumulator = 9999;
 
-	bc_box(1, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);//box accumulator
+	bc_box(1, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
 	mt_gotoXY(1, 67);
 	printf(" accumulator ");
 	mt_gotoXY(2, 70);
@@ -35,7 +36,7 @@ int m_printInstructionCounter()
 {
 	int instructionCounter = 0;
 
-	bc_box(4, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);//box instructionCounter
+	bc_box(4, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
 	mt_gotoXY(4, 63);
 	printf(" instructionCounter ");
 	mt_gotoXY(5, 70);
@@ -46,7 +47,7 @@ int m_printInstructionCounter()
 
 int m_printOperation()
 {
-	bc_box(7, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);//box operation
+	bc_box(7, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
 	mt_gotoXY(7, 68);
 	printf(" Operation ");
 	mt_gotoXY(8, 69);
@@ -65,7 +66,7 @@ int m_printFlags()
 	sc_regGet(F, &value_f);
 	sc_regGet(G, &value_g);
 
-	bc_box(10, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);//box flags
+	bc_box(10, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
 	mt_gotoXY(10, 69);
 	printf(" Flags ");
 	mt_gotoXY(11, 64);
@@ -82,7 +83,7 @@ int m_printCase()
 	int bcint9 [2] = {2087074816, 3956832};
 	int bcintp [2] = {2115508224, 1579134};
 
-	bc_box(BOX_ROW_MEMORY + 1, 1, row, column);//box case
+	bc_box(BOX_ROW_MEMORY + 1, 1, row, column);
 
 	bc_printbigchar(bcintp, BOX_ROW_MEMORY + 2, 2, purple, cyan);
 	bc_printbigchar(bcint9, BOX_ROW_MEMORY + 2, 11, purple, cyan);
@@ -98,7 +99,7 @@ int m_printKeys()
 	int column = 37;
 	int row = 10;
 
-	bc_box(13, 47, row, column);//box keys
+	bc_box(13, 47, row, column);
 	mt_gotoXY(13, 48);
 	printf(" Keys: ");
 	mt_gotoXY(14, 48);
@@ -225,12 +226,24 @@ int test_bigchar()
 	return 0;
 }
 
+int test_readkey()
+{
+	mt_clrscr();
+
+	char *test = malloc(sizeof(char) * 5);
+	int res = read(1, test, 5);
+	printf("%d\n", res);
+	printf("%s\n", test);
+	return 0;
+}
+
 int main()
 {
 	//test_memory();
 	//test_term();
-	test_bigchar();
-	//m_printAll();
+	//test_bigchar();
+	test_readkey();
+	//m_printAll();	
 
 	return 0;
 }
