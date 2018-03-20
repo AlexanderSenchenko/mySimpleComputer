@@ -133,45 +133,29 @@ int m_printAll()
 	m_printCase();
 	m_printKeys();
 
-	mt_gotoXY(2, 6);
+	//mt_gotoXY(2, 6);
 
 	return 0;
 }
 
 int m_all()
 {
-//	enum keys key;
+	enum keys key;
 
 	m_printAll();
 
-	rk_mytermregime(1, 0, 1, 1, 0);
-
-	char buf[8] = { 0 };
-
-	read(STDIN_FILENO, buf, 8);
-
-	while (1) {
-		//read(STDIN_FILENO, buf, 8);
-		//putchar(getchar());
-		write(STDOUT_FILENO, buf, 8);
-		//putchar();
-	}
-
-	rk_mytermrestore();
-
-	/*mt_gotoXY(2, 6);
-
-	while (key != 0) {
+	while (key != key_q) {
 		rk_readkey(&key);
-		//printf("%d", key);
 		if (key == key_s) {
 			sc_memorySave("Test.bin");
 		} else if (key == key_l) {
 			sc_memoryLoad("Test.bin");
+			//m_printMemory();
+			//m_printFlags();
+			//mt_gotoXY(23, 1);
 		}
 	}
-*/
-	//rk_mytermrestore();
+
 	mt_gotoXY(23, 1);
 
 	return 0;

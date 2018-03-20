@@ -10,6 +10,7 @@ struct termios stored_settings;
 
 enum keys {
 	key_other = 0,
+	key_q,
 	key_up = 10,
 	key_down,
 	key_right,
