@@ -4,6 +4,8 @@
 #include "myBigChars.h"
 #include "myReadkey.h"
 
+#include <string.h>
+
 #define BOX_ROW_MEMORY 12
 #define BOX_COLUMN_MEMORY 61
 
@@ -229,21 +231,25 @@ int test_bigchar()
 int test_readkey()
 {
 	mt_clrscr();
+	enum keys key;
 
-	char *test = malloc(sizeof(char) * 5);
-	int res = read(1, test, 5);
-	printf("%d\n", res);
-	printf("%s\n", test);
+	while (key != 0) {
+		rk_readkey(&key);
+		printf("%d\n", key);
+	}
+	
 	return 0;
 }
 
 int main()
 {
+	//m_printAll();
+
 	//test_memory();
 	//test_term();
 	//test_bigchar();
 	test_readkey();
-	//m_printAll();	
+		
 
 	return 0;
 }
