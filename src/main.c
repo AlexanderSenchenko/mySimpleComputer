@@ -14,9 +14,16 @@
 
 int m_printMemory()
 {
-	sc_memoryInit();
 	bc_box(1, 1, BOX_ROW_MEMORY, BOX_COLUMN_MEMORY);
 	mt_printterm();
+
+	return 0;
+}
+
+int m_initprintMemory()
+{
+	sc_memoryInit();
+	m_printMemory();
 
 	return 0;
 }
@@ -125,7 +132,8 @@ int m_printAll()
 {
 	mt_clrscr();
 
-	m_printMemory();
+	//m_printMemory();
+	m_initprintMemory();
 	m_printAccumulator();
 	m_printInstructionCounter();
 	m_printOperation();
@@ -133,10 +141,17 @@ int m_printAll()
 	m_printCase();
 	m_printKeys();
 
-	//mt_gotoXY(2, 6);
+	mt_gotoXY(2, 6);
+
+	fflush(stdout);
 
 	return 0;
 }
+
+int x = 0;
+int y = 0;
+int x_term = 6;
+int y_term = 2;
 
 int m_all()
 {
@@ -146,17 +161,48 @@ int m_all()
 
 	while (key != key_q) {
 		rk_readkey(&key);
+
 		if (key == key_s) {
 			sc_memorySave("Test.bin");
 		} else if (key == key_l) {
 			sc_memoryLoad("Test.bin");
-			//m_printMemory();
-			//m_printFlags();
-			//mt_gotoXY(23, 1);
+			m_printMemory();
+			mt_gotoXY(23, 1);
+			fflush(stdout);
+		} else if (key == key_up) {
+			if (y != 0) {
+				y--;
+				y_term--;
+			}
+		} else if (key == key_down) {
+			if (y != 9) {
+				y++;
+				y_term++;
+			}
+		} else if (key == key_right) {
+			if (x != 9) {
+				x++;
+				x_term += 6;			
+			}
+		} else if (key == key_left) {
+			if (x != 0) {
+				x--;
+				x_term -= 6;
+			}
+		} else if (key >= 0 && key <= 9) {
+			mt_gotoXY(25, 1);
+			sc_memorySet(y * 10 + x, key);
+			m_printMemory();
+			fflush(stdout);
 		}
+
+		mt_gotoXY(23, 1);
+		printf("y = %d x = %d \n", y, x);
+		printf("y_term = %d x_term = %d ", y_term, x_term);
+		fflush(stdout);
 	}
 
-	mt_gotoXY(23, 1);
+	mt_gotoXY(26, 1);
 
 	return 0;
 }
@@ -170,7 +216,6 @@ int test_memory()
 	printf("%d\n", value);
 
 	sc_memorySave("Test.bin");
-	//sc_memoryLoad("Test");
 
 	sc_regInit();
 	sc_regFlagPrint();
@@ -266,14 +311,12 @@ int test_readkey()
 
 int main()
 {
-	//m_printAll();
-	m_all();
-
 	//test_memory();
 	//test_term();
 	//test_bigchar();
 	//test_readkey();
 		
-
+	//m_printAll();
+	m_all();
 	return 0;
 }

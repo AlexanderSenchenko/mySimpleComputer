@@ -9,8 +9,7 @@
 struct termios stored_settings;
 
 enum keys {
-	key_other = 0,
-	key_q,
+	key_num = 0,
 	key_up = 10,
 	key_down,
 	key_right,
@@ -21,7 +20,9 @@ enum keys {
 	key_s,
 	key_r,
 	key_tt,
-	key_i
+	key_i,
+	key_other,
+	key_q
 };
 
 int rk_readkey(enum keys *key);
