@@ -8,7 +8,7 @@ int rk_readkey(enum keys *key)
 
 	read(STDIN_FILENO, buf, 8);
 
-	rk_mytermrestore();
+	//rk_mytermrestore();
 
 	if (strcmp(buf, "\E[A") == 0) {
 		*key = key_up;
@@ -35,6 +35,8 @@ int rk_readkey(enum keys *key)
 	} else {
 		*key = key_other;
 	}
+
+	//rk_mytermrestore();
 
 	return 0;
 }
