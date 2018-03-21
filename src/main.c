@@ -141,7 +141,7 @@ int m_printAll()
 	m_printCase();
 	m_printKeys();
 
-	mt_gotoXY(2, 6);
+	mt_gotoXY(1, 1);
 
 	fflush(stdout);
 
@@ -153,11 +153,43 @@ int y = 0;
 int x_term = 6;
 int y_term = 2;
 
+int dany_down(int ind)//Тестовое название
+{
+	if (ind == 1) {
+		enum colors a = green;
+		mt_ssetbgcolor(a);
+		mt_gotoXY(y_term, x_term - 4);
+		printf("+%.4d", memory[y * 10 + x]);
+		mt_stopcolor();
+	} else if (ind == 0) {
+		enum colors a = white;
+		mt_ssetbgcolor(a);
+		mt_gotoXY(y_term, x_term - 4);
+		printf("+%.4d", memory[y * 10 + x]);
+		mt_stopcolor();
+	} else {
+		return 1;
+	}
+	return 0;
+}
+
+int reset_color()
+{
+	dany_down(0);
+	dany_down(1);
+	fflush(stdout);
+
+	return 0;
+}
+
 int m_all()
 {
 	enum keys key;
 
 	m_printAll();
+
+	dany_down(1);
+	fflush(stdout);
 
 	while (key != key_q) {
 		rk_readkey(&key);
@@ -195,6 +227,8 @@ int m_all()
 			m_printMemory();
 			fflush(stdout);
 		}
+
+		reset_color();
 
 		mt_gotoXY(23, 1);
 		printf("y = %d x = %d \n", y, x);

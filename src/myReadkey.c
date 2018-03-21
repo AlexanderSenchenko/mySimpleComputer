@@ -2,7 +2,7 @@
 
 int rk_readkey(enum keys *key)
 {
-	rk_mytermregime(1, 0, 1, 1, 0);
+	rk_mytermregime(1, 0, 1, 1, 1);
 
 	char buf[8] = { 0 };
 
