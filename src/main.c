@@ -125,6 +125,8 @@ int m_printKeys()
 	printf("F5  - accumulator");
 	mt_gotoXY(20, 48);
 	printf("F6  - instructionCounter");
+	mt_gotoXY(21, 48);
+	printf("q   - exit prog");
 	return 0;
 }
 
@@ -156,17 +158,15 @@ int y_term = 2;
 int dany_down(int ind)//Тестовое название
 {
 	if (ind == 1) {
-		enum colors a = green;
+		enum colors a = cyan;
 		mt_ssetbgcolor(a);
 		mt_gotoXY(y_term, x_term - 4);
 		printf("+%.4d", memory[y * 10 + x]);
 		mt_stopcolor();
 	} else if (ind == 0) {
-		enum colors a = white;
-		mt_ssetbgcolor(a);
+		mt_stopcolor();
 		mt_gotoXY(y_term, x_term - 4);
 		printf("+%.4d", memory[y * 10 + x]);
-		mt_stopcolor();
 	} else {
 		return 1;
 	}
@@ -203,23 +203,31 @@ int m_all()
 			fflush(stdout);
 		} else if (key == key_up) {
 			if (y != 0) {
+				dany_down(0);
 				y--;
 				y_term--;
+				dany_down(1);
 			}
 		} else if (key == key_down) {
 			if (y != 9) {
+				dany_down(0);
 				y++;
 				y_term++;
+				dany_down(1);
 			}
 		} else if (key == key_right) {
 			if (x != 9) {
+				dany_down(0);
 				x++;
-				x_term += 6;			
+				x_term += 6;
+				dany_down(1);		
 			}
 		} else if (key == key_left) {
 			if (x != 0) {
+				dany_down(0);
 				x--;
 				x_term -= 6;
+				dany_down(1);
 			}
 		} else if (key >= 0 && key <= 9) {
 			mt_gotoXY(25, 1);
