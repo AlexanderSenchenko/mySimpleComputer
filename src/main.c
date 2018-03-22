@@ -85,20 +85,66 @@ int m_printFlags()
 	return 0;
 }
 
-int m_printCase()
+int m_printBoxCase()
 {
 	int column = 46;
 	int row = 10;
-	int bcint9 [2] = {2087074816, 3956832};
-	int bcintp [2] = {2115508224, 1579134};
-
 	bc_box(BOX_ROW_MEMORY + 1, 1, row, column);
+	return 0;
+}
 
+int bcint0 [2] = {1717992960, 8283750};
+int bcint1 [2] = {471341056, 3938328};
+int bcint2 [2] = {538983424, 3935292};
+int bcint3 [2] = {2120252928, 8282238};
+int bcint4 [2] = {2120640000, 6316158};
+int bcint5 [2] = {2114092544, 8273984};
+int bcint6 [2] = {33701376, 4071998};
+int bcint7 [2] = {811630080, 396312};
+int bcint8 [2] = {2120646144, 8283750};
+int bcint9 [2] = {2087074816, 3956832};
+int bcintp [2] = {2115508224, 1579134};
+
+int x = 0;
+int y = 0;
+int x_term = 6;
+int y_term = 2;
+
+int m_printCase()
+{
 	bc_printbigchar(bcintp, BOX_ROW_MEMORY + 2, 2, purple, cyan);
-	bc_printbigchar(bcint9, BOX_ROW_MEMORY + 2, 11, purple, cyan);
-	bc_printbigchar(bcint9, BOX_ROW_MEMORY + 2, 20, purple, cyan);
-	bc_printbigchar(bcint9, BOX_ROW_MEMORY + 2, 29, purple, cyan);
-	bc_printbigchar(bcint9, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+	
+	int value;
+	sc_memoryGet(y * 10 + x, &value);
+
+	bc_printbigchar(bcint0, BOX_ROW_MEMORY + 2, 11, purple, cyan);
+	bc_printbigchar(bcint0, BOX_ROW_MEMORY + 2, 20, purple, cyan);
+	bc_printbigchar(bcint0, BOX_ROW_MEMORY + 2, 29, purple, cyan);
+	
+	switch (value) {
+		case 0:
+			bc_printbigchar(bcint0, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+		case 1:
+			bc_printbigchar(bcint1, BOX_ROW_MEMORY + 2, 38, purple, cyan);		
+		case 2:
+			bc_printbigchar(bcint2, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+		case 3:
+			bc_printbigchar(bcint3, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+		case 4:
+			bc_printbigchar(bcint4, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+		case 5:
+			bc_printbigchar(bcint5, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+		case 6:
+			bc_printbigchar(bcint6, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+		case 7:
+			bc_printbigchar(bcint7, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+		case 8:
+			bc_printbigchar(bcint8, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+		case 9:
+			bc_printbigchar(bcint9, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+		default:
+			break;
+	}
 
 	return 0;
 }
@@ -140,7 +186,8 @@ int m_printAll()
 	m_printInstructionCounter();
 	m_printOperation();
 	m_printFlags();
-	m_printCase();
+	m_printBoxCase();
+	//m_printCase();
 	m_printKeys();
 
 	mt_gotoXY(1, 1);
@@ -149,11 +196,6 @@ int m_printAll()
 
 	return 0;
 }
-
-int x = 0;
-int y = 0;
-int x_term = 6;
-int y_term = 2;
 
 int dany_down(int ind)//Тестовое название
 {
@@ -189,6 +231,7 @@ int m_all()
 	m_printAll();
 
 	dany_down(1);
+	m_printCase();
 	fflush(stdout);
 
 	while (key != key_q) {
@@ -207,6 +250,7 @@ int m_all()
 				y--;
 				y_term--;
 				dany_down(1);
+				m_printCase();
 			}
 		} else if (key == key_down) {
 			if (y != 9) {
@@ -214,13 +258,15 @@ int m_all()
 				y++;
 				y_term++;
 				dany_down(1);
+				m_printCase();
 			}
 		} else if (key == key_right) {
 			if (x != 9) {
 				dany_down(0);
 				x++;
 				x_term += 6;
-				dany_down(1);		
+				dany_down(1);
+				m_printCase();		
 			}
 		} else if (key == key_left) {
 			if (x != 0) {
@@ -228,6 +274,7 @@ int m_all()
 				x--;
 				x_term -= 6;
 				dany_down(1);
+				m_printCase();
 			}
 		} else if (key >= 0 && key <= 9) {
 			mt_gotoXY(25, 1);
