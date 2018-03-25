@@ -26,7 +26,7 @@ LLIBS = $(LIBS:$(LIB_PATH)/lib%.a=-l%)
 all: makedirs main
 	
 main: $(BUILD_PATH)/main.o $(LIBS)
-	$(CC) $(COMPILE_FLAGS) $(LIB_FLAG)$(LIB_PATH) $(BUILD_PATH)/main.o -o $(BIN_PATH)/$(BIN_NAME) $(LLIBS)
+	$(CC) $(COMPILE_FLAGS) $(LIB_FLAG)$(LIB_PATH) $(BUILD_PATH)/main.o -o $(BIN_PATH)/$(BIN_NAME) $(LLIBS) -lm
 
 $(BUILD_PATH)/main.o: $(SRC_PATH)/main.$(SRC_EXT)
 	$(CC) $(COMPILE_FLAGS) $(INCLUDE_PATH_FLAGS) $< -c -o $@

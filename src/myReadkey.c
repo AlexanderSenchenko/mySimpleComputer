@@ -10,16 +10,12 @@ int rk_readkey(enum keys *key)
 
 	if (strcmp(buf, "\E[A") == 0) {
 		*key = key_up;
-		//write(STDOUT_FILENO, buf, 8);
 	} else if (strcmp(buf, "\E[B") == 0) {
 		*key = key_down;
-		//write(STDOUT_FILENO, buf, 8);
 	} else if (strcmp(buf, "\E[C") == 0) {
 		*key = key_right;
-		//write(STDOUT_FILENO, buf, 8);
 	} else if (strcmp(buf, "\E[D") == 0) {
 		*key = key_left;
-		//write(STDOUT_FILENO, buf, 8);
 	} else if (strcmp(buf, "\E[15~") == 0) {
 		*key = key_f5;
 	} else if (strcmp(buf, "\E[17~") == 0) {
@@ -36,13 +32,14 @@ int rk_readkey(enum keys *key)
 		*key = key_i;
 	} else if (buf[0] >= '0' && buf[0] <= '9') {
 		*key = buf[0] - 48;
-		//printf("%d", *key);
 	} else if (buf[0] == 'q') {
 		*key = key_q;
-		//printf("%d", *key);
+	} else if (buf[0] == '+') {
+		*key = key_plus;
+	} else if (buf[0] == '-') {
+		*key = key_minus;
 	} else {
 		*key = key_other;
-		//printf("%c", buf[0]);
 	}
 
 	rk_mytermrestore();

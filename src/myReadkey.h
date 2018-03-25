@@ -21,6 +21,8 @@ enum keys {
 	key_r,
 	key_tt,
 	key_i,
+	key_plus,
+	key_minus,
 	key_other,
 	key_q
 };

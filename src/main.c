@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include "memory.h"
 #include "myTerm.h"
 #include "myBigChars.h"
@@ -109,55 +110,84 @@ int y = 0;
 int x_term = 6;
 int y_term = 2;
 
+// int m_printCaseOper(enum keys key_oper)
+// {
+// 	if () {}
+// }
+
+int m_printCaseBigChar(int value, int coord_y)
+{
+	switch (value) {
+		case 0:
+			bc_printbigchar(bcint0, BOX_ROW_MEMORY + 2, coord_y, purple, cyan);
+			break;
+		case 1:
+			bc_printbigchar(bcint1, BOX_ROW_MEMORY + 2, coord_y, purple, cyan);
+			break;		
+		case 2:
+			bc_printbigchar(bcint2, BOX_ROW_MEMORY + 2, coord_y, purple, cyan);
+			break;
+		case 3:
+			bc_printbigchar(bcint3, BOX_ROW_MEMORY + 2, coord_y, purple, cyan);
+			break;
+		case 4:
+			bc_printbigchar(bcint4, BOX_ROW_MEMORY + 2, coord_y, purple, cyan);
+			break;
+		case 5:
+			bc_printbigchar(bcint5, BOX_ROW_MEMORY + 2, coord_y, purple, cyan);
+			break;
+		case 6:
+			bc_printbigchar(bcint6, BOX_ROW_MEMORY + 2, coord_y, purple, cyan);
+			break;
+		case 7:
+			bc_printbigchar(bcint7, BOX_ROW_MEMORY + 2, coord_y, purple, cyan);
+			break;
+		case 8:
+			bc_printbigchar(bcint8, BOX_ROW_MEMORY + 2, coord_y, purple, cyan);
+			break;
+		case 9:
+			bc_printbigchar(bcint9, BOX_ROW_MEMORY + 2, coord_y, purple, cyan);
+			break;
+	}
+	return 0;
+}
+
 int m_printCase()
 {
 	bc_printbigchar(bcintp, BOX_ROW_MEMORY + 2, 2, purple, cyan);
 	
 	int value;
+	int rank;
+	int mult;
 	sc_memoryGet(y * 10 + x, &value);
 
-	mt_gotoXY(25, 0);
-	printf("Value = %d, y = %d, x = %d", value, y, x);
+	//mt_gotoXY(25, 0);
+	//printf("Value = %d, y = %d, x = %d", value, y, x);
 
-	bc_printbigchar(bcint0, BOX_ROW_MEMORY + 2, 11, purple, cyan);
-	bc_printbigchar(bcint0, BOX_ROW_MEMORY + 2, 20, purple, cyan);
-	bc_printbigchar(bcint0, BOX_ROW_MEMORY + 2, 29, purple, cyan);
-	
-	switch (value) {
-		case 0:
-			bc_printbigchar(bcint0, BOX_ROW_MEMORY + 2, 38, purple, cyan);
-			break;
-		case 1:
-			bc_printbigchar(bcint1, BOX_ROW_MEMORY + 2, 38, purple, cyan);
-			break;		
-		case 2:
-			bc_printbigchar(bcint2, BOX_ROW_MEMORY + 2, 38, purple, cyan);
-			break;
-		case 3:
-			bc_printbigchar(bcint3, BOX_ROW_MEMORY + 2, 38, purple, cyan);
-			break;
-		case 4:
-			bc_printbigchar(bcint4, BOX_ROW_MEMORY + 2, 38, purple, cyan);
-			break;
-		case 5:
-			bc_printbigchar(bcint5, BOX_ROW_MEMORY + 2, 38, purple, cyan);
-			break;
-		case 6:
-			bc_printbigchar(bcint6, BOX_ROW_MEMORY + 2, 38, purple, cyan);
-			break;
-		case 7:
-			bc_printbigchar(bcint7, BOX_ROW_MEMORY + 2, 38, purple, cyan);
-			break;
-		case 8:
-			bc_printbigchar(bcint8, BOX_ROW_MEMORY + 2, 38, purple, cyan);
-			break;
-		case 9:
-			bc_printbigchar(bcint9, BOX_ROW_MEMORY + 2, 38, purple, cyan);
-			break;
-		default:
-			break;
+	//bc_printbigchar(bcint0, BOX_ROW_MEMORY + 2, 11, purple, cyan);
+	//bc_printbigchar(bcint0, BOX_ROW_MEMORY + 2, 20, purple, cyan);
+	//bc_printbigchar(bcint0, BOX_ROW_MEMORY + 2, 29, purple, cyan);
+
+	for (int i = 38, j = 0; i >= 11; i -= 9, j++) {
+		mult = pow(10, j);
+		//rank = value % mult;
+		rank = value / mult;
+		//mult /= 10;
+		if (rank > 9) {
+			rank %= 10;
+		} 
+		// else if (rank > 99 && rank <= 999) {
+		// 	rank = value % 100;
+		// }
+
+		mt_gotoXY(25 + j, 0);
+		printf("value = %d, rank = %d, mult = %d", value, rank, mult);
+		//fflush(stdout);
+		
+		m_printCaseBigChar(rank, i);
 	}
-	//fflush(stdout);
+	
+	//m_printCaseBigChar(value);
 
 	return 0;
 }
@@ -228,7 +258,7 @@ int dany_down(int ind)//Тестовое название
 	return 0;
 }
 
-int reset_color()
+int reset_bgcolor()
 {
 	dany_down(0);
 	dany_down(1);
@@ -240,6 +270,7 @@ int reset_color()
 int m_all()
 {
 	enum keys key;
+	//enum keys key_oper;
 
 	m_printAll();
 
@@ -298,17 +329,22 @@ int m_all()
 			dany_down(1);
 		} else if (key >= 0 && key <= 9) {
 			//mt_gotoXY(25, 1);
-			sc_memorySet(y * 10 + x, key);
+			int value;
+			sc_memoryGet(y * 10 + x, &value);
+			sc_memorySet(y * 10 + x, key + value);
 			m_printMemory();
 			fflush(stdout);
-		}
+		} //else if (key == key_plus || key_minus) {
+		// 	key_oper = key;
+		// 	m_printCaseOper(key_oper);
+		// }
 
-		reset_color();
+		reset_bgcolor();
 		m_printCase();
 
 		mt_gotoXY(23, 1);
 		//printf("y = %d x = %d \n", y, x);
-		printf("y_term = %d x_term = %d ", y_term, x_term);
+		//printf("y_term = %d x_term = %d ", y_term, x_term);
 		fflush(stdout);
 	//} while (key != key_q);
 	}
