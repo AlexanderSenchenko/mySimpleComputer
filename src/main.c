@@ -1,10 +1,9 @@
 #include <stdio.h>
+#include <string.h>
 #include "memory.h"
 #include "myTerm.h"
 #include "myBigChars.h"
 #include "myReadkey.h"
-
-#include <string.h>
 
 #define BOX_ROW_MEMORY 12
 #define BOX_COLUMN_MEMORY 61
@@ -117,6 +116,9 @@ int m_printCase()
 	int value;
 	sc_memoryGet(y * 10 + x, &value);
 
+	mt_gotoXY(25, 0);
+	printf("Value = %d, y = %d, x = %d", value, y, x);
+
 	bc_printbigchar(bcint0, BOX_ROW_MEMORY + 2, 11, purple, cyan);
 	bc_printbigchar(bcint0, BOX_ROW_MEMORY + 2, 20, purple, cyan);
 	bc_printbigchar(bcint0, BOX_ROW_MEMORY + 2, 29, purple, cyan);
@@ -124,27 +126,38 @@ int m_printCase()
 	switch (value) {
 		case 0:
 			bc_printbigchar(bcint0, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+			break;
 		case 1:
-			bc_printbigchar(bcint1, BOX_ROW_MEMORY + 2, 38, purple, cyan);		
+			bc_printbigchar(bcint1, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+			break;		
 		case 2:
 			bc_printbigchar(bcint2, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+			break;
 		case 3:
 			bc_printbigchar(bcint3, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+			break;
 		case 4:
 			bc_printbigchar(bcint4, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+			break;
 		case 5:
 			bc_printbigchar(bcint5, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+			break;
 		case 6:
 			bc_printbigchar(bcint6, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+			break;
 		case 7:
 			bc_printbigchar(bcint7, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+			break;
 		case 8:
 			bc_printbigchar(bcint8, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+			break;
 		case 9:
 			bc_printbigchar(bcint9, BOX_ROW_MEMORY + 2, 38, purple, cyan);
+			break;
 		default:
 			break;
 	}
+	//fflush(stdout);
 
 	return 0;
 }
@@ -172,7 +185,7 @@ int m_printKeys()
 	mt_gotoXY(20, 48);
 	printf("F6  - instructionCounter");
 	mt_gotoXY(21, 48);
-	printf("q   - exit prog");
+	printf("q   - exit");
 	return 0;
 }
 
@@ -235,6 +248,7 @@ int m_all()
 	fflush(stdout);
 
 	while (key != key_q) {
+	//do {
 		rk_readkey(&key);
 
 		if (key == key_s) {
@@ -250,7 +264,6 @@ int m_all()
 				y--;
 				y_term--;
 				dany_down(1);
-				m_printCase();
 			}
 		} else if (key == key_down) {
 			if (y != 9) {
@@ -258,37 +271,46 @@ int m_all()
 				y++;
 				y_term++;
 				dany_down(1);
-				m_printCase();
 			}
 		} else if (key == key_right) {
+			dany_down(0);
 			if (x != 9) {
-				dany_down(0);
 				x++;
-				x_term += 6;
-				dany_down(1);
-				m_printCase();		
+				x_term += 6;		
+			} else if (x == 9 && y != 9) {
+				x = 0;
+				x_term = 6;
+				y++;
+				y_term++;
 			}
+			dany_down(1);
 		} else if (key == key_left) {
+			dany_down(0);
 			if (x != 0) {
-				dany_down(0);
 				x--;
 				x_term -= 6;
-				dany_down(1);
-				m_printCase();
+			} else if (x == 0 && y != 0) {
+				x = 9;
+				x_term = 60;
+				y--;
+				y_term--;
 			}
+			dany_down(1);
 		} else if (key >= 0 && key <= 9) {
-			mt_gotoXY(25, 1);
+			//mt_gotoXY(25, 1);
 			sc_memorySet(y * 10 + x, key);
 			m_printMemory();
 			fflush(stdout);
 		}
 
 		reset_color();
+		m_printCase();
 
 		mt_gotoXY(23, 1);
-		printf("y = %d x = %d \n", y, x);
+		//printf("y = %d x = %d \n", y, x);
 		printf("y_term = %d x_term = %d ", y_term, x_term);
 		fflush(stdout);
+	//} while (key != key_q);
 	}
 
 	mt_gotoXY(26, 1);
