@@ -5,6 +5,7 @@
 #include "myTerm.h"
 #include "myBigChars.h"
 #include "myReadkey.h"
+#include <signal.h>
 
 #define BOX_ROW_MEMORY 12
 #define BOX_COLUMN_MEMORY 61
@@ -110,11 +111,6 @@ int y = 0;
 int x_term = 6;
 int y_term = 2;
 
-// int m_printCaseOper(enum keys key_oper)
-// {
-// 	if () {}
-// }
-
 int m_printCaseBigChar(int value, int coord_y)
 {
 	switch (value) {
@@ -180,8 +176,8 @@ int m_printCase()
 		// 	rank = value % 100;
 		// }
 
-		mt_gotoXY(25 + j, 0);
-		printf("value = %d, rank = %d, mult = %d", value, rank, mult);
+		//mt_gotoXY(25 + j, 0);
+		//printf("value = %d, rank = %d, mult = %d", value, rank, mult);
 		//fflush(stdout);
 		
 		m_printCaseBigChar(rank, i);
@@ -456,14 +452,35 @@ int test_readkey()
 	return 0;
 }
 
+void sighandler(int signo)
+{
+	printf("Test");
+}
+
+int test_signal()
+{
+	int x = 0;
+
+	signal(SGUSR1, sighandler);
+	do {
+		printf("Input x = ");
+		scanf("%d", &x);
+		if (x & 0x0A)
+			raise(SGUSR1);
+	} while (x != 99);
+
+	return 0;
+}
+
 int main()
 {
 	//test_memory();
 	//test_term();
 	//test_bigchar();
 	//test_readkey();
+	test_signal();
 		
 	//m_printAll();
-	m_all();
+	//m_all();
 	return 0;
 }
