@@ -6,6 +6,7 @@
 #include "myBigChars.h"
 #include "myReadkey.h"
 #include <signal.h>
+#include <sys/time.h>
 
 #define BOX_ROW_MEMORY 12
 #define BOX_COLUMN_MEMORY 61
@@ -457,17 +458,37 @@ void sighandler(int signo)
 	printf("Test");
 }
 
-int test_signal()
+int test_signal1()
 {
 	int x = 0;
 
-	signal(SGUSR1, sighandler);
+	signal(SIGUSR1, sighandler);
 	do {
 		printf("Input x = ");
 		scanf("%d", &x);
 		if (x & 0x0A)
-			raise(SGUSR1);
+			raise(SIGUSR1);
 	} while (x != 99);
+
+	return 0;
+}
+
+int test_signal2()
+{
+	struct itimerval nval, oval;
+
+	signal(SIGALRM, sighandler);
+
+	nval.it_interval.tv_sec = 3;
+	nval.it_interval.tv_usec = 500;
+	nval.it_value.tv_sec = 1;
+	nval.it_value.tv_usec = 0;
+
+	setitimer(ITIMER_REAL, &nval, &oval);
+
+	while (1) {
+		pause();
+	}
 
 	return 0;
 }
@@ -478,7 +499,8 @@ int main()
 	//test_term();
 	//test_bigchar();
 	//test_readkey();
-	test_signal();
+	//test_signal1();
+	test_signal2();
 		
 	//m_printAll();
 	//m_all();
