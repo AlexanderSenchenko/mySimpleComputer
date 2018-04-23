@@ -105,6 +105,12 @@ int bcint6 [2] = {33701376, 4071998};
 int bcint7 [2] = {811630080, 396312};
 int bcint8 [2] = {2120646144, 8283750};
 int bcint9 [2] = {2087074816, 3956832};
+int bcintA [2] = {2118269952, 4342338};
+int bcintB [2] = {1044528640, 4080194};
+int bcintC [2] = {37895168, 3949058};
+int bcintD [2] = {1111637504, 4080194};
+int bcintE [2] = {2114092544, 8258050};
+int bcintF [2] = {33717760, 131646};
 int bcintp [2] = {2115508224, 1579134};
 
 int x = 0;
@@ -145,6 +151,24 @@ int m_printCaseBigChar(int value, int coord_y)
 		case 9:
 			bc_printbigchar(bcint9, BOX_ROW_MEMORY + 2, coord_y, purple, cyan);
 			break;
+		case 10:
+			bc_printbigchar(bcintA, BOX_ROW_MEMORY + 2, coord_y, purple, cyan);
+			break;
+		case 11:
+			bc_printbigchar(bcintB, BOX_ROW_MEMORY + 2, coord_y, purple, cyan);
+			break;
+		case 12:
+			bc_printbigchar(bcintC, BOX_ROW_MEMORY + 2, coord_y, purple, cyan);
+			break;
+		case 13:
+			bc_printbigchar(bcintD, BOX_ROW_MEMORY + 2, coord_y, purple, cyan);
+			break;
+		case 14:
+			bc_printbigchar(bcintE, BOX_ROW_MEMORY + 2, coord_y, purple, cyan);
+			break;
+		case 15:
+			bc_printbigchar(bcintF, BOX_ROW_MEMORY + 2, coord_y, purple, cyan);
+			break;
 	}
 	return 0;
 }
@@ -154,37 +178,40 @@ int m_printCase()
 	bc_printbigchar(bcintp, BOX_ROW_MEMORY + 2, 2, purple, cyan);
 	
 	int value;
-	int rank;
-	int mult;
+	int rank[4];
+	//int mult = 0;
 	sc_memoryGet(y * 10 + x, &value);
 
-	//mt_gotoXY(25, 0);
-	//printf("Value = %d, y = %d, x = %d", value, y, x);
+	/* 10 */
+	// for (int i = 38, j = 0; i >= 11; i -= 9, j++) {
+	// 	mult = pow(10, j);
+	// 	rank = value / mult;
+	// 	if (rank > 9) {
+	// 		rank %= 10;
+	// 	}
 
-	//bc_printbigchar(bcint0, BOX_ROW_MEMORY + 2, 11, purple, cyan);
-	//bc_printbigchar(bcint0, BOX_ROW_MEMORY + 2, 20, purple, cyan);
-	//bc_printbigchar(bcint0, BOX_ROW_MEMORY + 2, 29, purple, cyan);
+	// 	m_printCaseBigChar(rank, i);
+	// }
+
+	/* 16 */
+	// int i = 38;
+	// if (value < 16) {
+	// 	m_printCaseBigChar(value, i);
+	// } else if (value >= 16) {
+	// 	rank = value % 16;
+	// 	m_printCaseBigChar(rank, i);
+	// 	m_printCaseBigChar(value / 16, i - 9);
+	// }
+
+	/* 16(beta) */
+	for (int i = 0; i < 4; ++i) {
+		rank[i] = value % 16;
+		value /= 16;
+	}
 
 	for (int i = 38, j = 0; i >= 11; i -= 9, j++) {
-		mult = pow(10, j);
-		//rank = value % mult;
-		rank = value / mult;
-		//mult /= 10;
-		if (rank > 9) {
-			rank %= 10;
-		} 
-		// else if (rank > 99 && rank <= 999) {
-		// 	rank = value % 100;
-		// }
-
-		//mt_gotoXY(25 + j, 0);
-		//printf("value = %d, rank = %d, mult = %d", value, rank, mult);
-		//fflush(stdout);
-		
-		m_printCaseBigChar(rank, i);
+		m_printCaseBigChar(rank[j], i);
 	}
-	
-	//m_printCaseBigChar(value);
 
 	return 0;
 }
@@ -237,18 +264,18 @@ int m_printAll()
 	return 0;
 }
 
-int dany_down(int ind)//Тестовое название
+int m_set_bgcolor(int ind)
 {
 	if (ind == 1) {
 		enum colors a = cyan;
 		mt_ssetbgcolor(a);
 		mt_gotoXY(y_term, x_term - 4);
-		printf("+%.4d", memory[y * 10 + x]);
+		printf("+%.4X", memory[y * 10 + x]);
 		mt_stopcolor();
 	} else if (ind == 0) {
 		mt_stopcolor();
 		mt_gotoXY(y_term, x_term - 4);
-		printf("+%.4d", memory[y * 10 + x]);
+		printf("+%.4X", memory[y * 10 + x]);
 	} else {
 		return 1;
 	}
@@ -257,8 +284,8 @@ int dany_down(int ind)//Тестовое название
 
 int reset_bgcolor()
 {
-	dany_down(0);
-	dany_down(1);
+	m_set_bgcolor(0);
+	m_set_bgcolor(1);
 	fflush(stdout);
 
 	return 0;
@@ -271,7 +298,7 @@ int m_all()
 
 	m_printAll();
 
-	dany_down(1);
+	m_set_bgcolor(1);
 	m_printCase();
 	fflush(stdout);
 
@@ -288,20 +315,20 @@ int m_all()
 			fflush(stdout);
 		} else if (key == key_up) {
 			if (y != 0) {
-				dany_down(0);
+				m_set_bgcolor(0);
 				y--;
 				y_term--;
-				dany_down(1);
+				m_set_bgcolor(1);
 			}
 		} else if (key == key_down) {
 			if (y != 9) {
-				dany_down(0);
+				m_set_bgcolor(0);
 				y++;
 				y_term++;
-				dany_down(1);
+				m_set_bgcolor(1);
 			}
 		} else if (key == key_right) {
-			dany_down(0);
+			m_set_bgcolor(0);
 			if (x != 9) {
 				x++;
 				x_term += 6;		
@@ -311,9 +338,9 @@ int m_all()
 				y++;
 				y_term++;
 			}
-			dany_down(1);
+			m_set_bgcolor(1);
 		} else if (key == key_left) {
-			dany_down(0);
+			m_set_bgcolor(0);
 			if (x != 0) {
 				x--;
 				x_term -= 6;
@@ -323,7 +350,7 @@ int m_all()
 				y--;
 				y_term--;
 			}
-			dany_down(1);
+			m_set_bgcolor(1);
 		} else if (key >= 0 && key <= 9) {
 			//mt_gotoXY(25, 1);
 			int value;
@@ -500,9 +527,9 @@ int main()
 	//test_bigchar();
 	//test_readkey();
 	//test_signal1();
-	test_signal2();
+	//test_signal2();
 		
 	//m_printAll();
-	//m_all();
+	m_all();
 	return 0;
 }

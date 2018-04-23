@@ -64,7 +64,7 @@ int mt_printterm()
 			if (j != 0) {
 				printf(" ");
 			}
-			printf("+%.4d", memory[i * 10 + j]);
+			printf("+%.4x", memory[i * 10 + j]);
 		}
 		printf("\n");
 	}
