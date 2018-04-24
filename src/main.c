@@ -1,20 +1,145 @@
 #include <stdio.h>
-#include <string.h>
-#include <math.h>
+// #include <string.h>
+// #include <math.h>
+
 #include "memory.h"
 #include "myTerm.h"
 #include "myBigChars.h"
 #include "myReadkey.h"
+#include "PrintAll.h"
+
 #include <signal.h>
 #include <sys/time.h>
 
-#define BOX_ROW_MEMORY 12
-#define BOX_COLUMN_MEMORY 61
+int pa_all()
+{
+	enum keys key;
 
-#define MINI_BOX_ROW 3
-#define MINI_BOX_COLUMN 22
+	pa_printAll();
 
-int m_printMemory()
+	while (key != key_q) {
+		rk_readkey(&key);
+
+		if (key == key_s) {
+			sc_memorySave("Test.bin");
+		} else if (key == key_l) {
+			sc_memoryLoad("Test.bin");
+			pa_printMemory();
+			mt_gotoXY(23, 1);
+			fflush(stdout);
+		} else if (key == key_up) {
+			if (y != 0) {
+				pa_setBGColor(0);
+				y--;
+				y_term--;
+				pa_setBGColor(1);
+			}
+		} else if (key == key_down) {
+			if (y != 9) {
+				pa_setBGColor(0);
+				y++;
+				y_term++;
+				pa_setBGColor(1);
+			}
+		} else if (key == key_right) {
+			pa_setBGColor(0);
+			if (x != 9) {
+				x++;
+				x_term += 6;		
+			} else if (x == 9 && y != 9) {
+				x = 0;
+				x_term = 6;
+				y++;
+				y_term++;
+			}
+			pa_setBGColor(1);
+		} else if (key == key_left) {
+			pa_setBGColor(0);
+			if (x != 0) {
+				x--;
+				x_term -= 6;
+			} else if (x == 0 && y != 0) {
+				x = 9;
+				x_term = 60;
+				y--;
+				y_term--;
+			}
+			pa_setBGColor(1);
+		} else if (key >= 0 && key <= 9) {
+			int value;
+			sc_memoryGet(y * 10 + x, &value);
+			sc_memorySet(y * 10 + x, key + value);
+		}
+
+		pa_resetBGColor();
+		pa_printCase();
+
+		mt_gotoXY(26, 1);
+
+		fflush(stdout);
+	}
+
+	return 0;
+}
+
+int pa_setBGColor(int ind)
+{
+	if (ind == 1) {
+		enum colors a = cyan;
+		mt_ssetbgcolor(a);
+		mt_gotoXY(y_term, x_term - 4);
+		printf("+%.4X", memory[y * 10 + x]);
+		mt_stopcolor();
+	} else if (ind == 0) {
+		mt_stopcolor();
+		mt_gotoXY(y_term, x_term - 4);
+		printf("+%.4X", memory[y * 10 + x]);
+	} else {
+		return 1;
+	}
+	return 0;
+}
+
+int pa_resetBGColor()
+{
+	pa_setBGColor(0);
+	pa_setBGColor(1);
+	fflush(stdout);
+
+	return 0;
+}
+
+int pa_printAll()
+{
+	mt_clrscr();
+
+	pa_initprintMemory();
+	pa_printAccumulator();
+	pa_printInstructionCounter();
+	pa_printOperation();
+	pa_printFlags();
+	pa_printBoxCase();
+	pa_printKeys();
+
+	pa_setBGColor(1);
+	pa_printCase();
+
+	mt_gotoXY(26, 1);
+
+	fflush(stdout);
+
+	return 0;
+}
+
+int pa_initprintMemory()
+{
+	sc_memoryInit();
+	pa_printMemory();
+
+	return 0;
+}
+
+int pa_printMemory()
 {
 	bc_box(1, 1, BOX_ROW_MEMORY, BOX_COLUMN_MEMORY);
 	mt_printterm();
@@ -22,15 +147,7 @@ int m_printMemory()
 	return 0;
 }
 
-int m_initprintMemory()
-{
-	sc_memoryInit();
-	m_printMemory();
-
-	return 0;
-}
-
-int m_printAccumulator()
+int pa_printAccumulator()
 {
 	int accumulator = 9999;
 
@@ -43,7 +160,7 @@ int m_printAccumulator()
 	return 0;
 }
 
-int m_printInstructionCounter()
+int pa_printInstructionCounter()
 {
 	int instructionCounter = 0;
 
@@ -56,7 +173,7 @@ int m_printInstructionCounter()
 	return 0;
 }
 
-int m_printOperation()
+int pa_printOperation()
 {
 	bc_box(7, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
 	mt_gotoXY(7, 68);
@@ -67,7 +184,7 @@ int m_printOperation()
 	return 0;
 }
 
-int m_printFlags()
+int pa_printFlags()
 {
 	int value_a, value_b, value_c, value_f, value_g;
 
@@ -87,7 +204,7 @@ int m_printFlags()
 	return 0;
 }
 
-int m_printBoxCase()
+int pa_printBoxCase()
 {
 	int column = 46;
 	int row = 10;
@@ -95,30 +212,40 @@ int m_printBoxCase()
 	return 0;
 }
 
-int bcint0 [2] = {1717992960, 8283750};
-int bcint1 [2] = {471341056, 3938328};
-int bcint2 [2] = {538983424, 3935292};
-int bcint3 [2] = {2120252928, 8282238};
-int bcint4 [2] = {2120640000, 6316158};
-int bcint5 [2] = {2114092544, 8273984};
-int bcint6 [2] = {33701376, 4071998};
-int bcint7 [2] = {811630080, 396312};
-int bcint8 [2] = {2120646144, 8283750};
-int bcint9 [2] = {2087074816, 3956832};
-int bcintA [2] = {2118269952, 4342338};
-int bcintB [2] = {1044528640, 4080194};
-int bcintC [2] = {37895168, 3949058};
-int bcintD [2] = {1111637504, 4080194};
-int bcintE [2] = {2114092544, 8258050};
-int bcintF [2] = {33717760, 131646};
-int bcintp [2] = {2115508224, 1579134};
+int pa_printCase()
+{
+	bc_printbigchar(bcintp, BOX_ROW_MEMORY + 2, 2, purple, cyan);
+	
+	int value;
+	int rank[4];
+	// int mult = 0;
+	sc_memoryGet(y * 10 + x, &value);
 
-int x = 0;
-int y = 0;
-int x_term = 6;
-int y_term = 2;
+	/* 10 */
+	// for (int i = 38, j = 0; i >= 11; i -= 9, j++) {
+	// 	mult = pow(10, j);
+	// 	rank = value / mult;
+	// 	if (rank > 9) {
+	// 		rank %= 10;
+	// 	}
 
-int m_printCaseBigChar(int value, int coord_y)
+	// 	m_printCaseBigChar(rank, i);
+	// }
+
+	/* 16 */
+	for (int i = 0; i < 4; ++i) {
+		rank[i] = value % 16;
+		value /= 16;
+	}
+
+	for (int i = 38, j = 0; i >= 11; i -= 9, j++) {
+		pa_printCaseBigChar(rank[j], i);
+	}
+
+	return 0;
+}
+
+int pa_printCaseBigChar(int value, int coord_y)
 {
 	switch (value) {
 		case 0:
@@ -173,50 +300,7 @@ int m_printCaseBigChar(int value, int coord_y)
 	return 0;
 }
 
-int m_printCase()
-{
-	bc_printbigchar(bcintp, BOX_ROW_MEMORY + 2, 2, purple, cyan);
-	
-	int value;
-	int rank[4];
-	//int mult = 0;
-	sc_memoryGet(y * 10 + x, &value);
-
-	/* 10 */
-	// for (int i = 38, j = 0; i >= 11; i -= 9, j++) {
-	// 	mult = pow(10, j);
-	// 	rank = value / mult;
-	// 	if (rank > 9) {
-	// 		rank %= 10;
-	// 	}
-
-	// 	m_printCaseBigChar(rank, i);
-	// }
-
-	/* 16 */
-	// int i = 38;
-	// if (value < 16) {
-	// 	m_printCaseBigChar(value, i);
-	// } else if (value >= 16) {
-	// 	rank = value % 16;
-	// 	m_printCaseBigChar(rank, i);
-	// 	m_printCaseBigChar(value / 16, i - 9);
-	// }
-
-	/* 16(beta) */
-	for (int i = 0; i < 4; ++i) {
-		rank[i] = value % 16;
-		value /= 16;
-	}
-
-	for (int i = 38, j = 0; i >= 11; i -= 9, j++) {
-		m_printCaseBigChar(rank[j], i);
-	}
-
-	return 0;
-}
-
-int m_printKeys()
+int pa_printKeys()
 {
 	int column = 37;
 	int row = 10;
@@ -243,141 +327,7 @@ int m_printKeys()
 	return 0;
 }
 
-int m_printAll()
-{
-	mt_clrscr();
-
-	//m_printMemory();
-	m_initprintMemory();
-	m_printAccumulator();
-	m_printInstructionCounter();
-	m_printOperation();
-	m_printFlags();
-	m_printBoxCase();
-	//m_printCase();
-	m_printKeys();
-
-	mt_gotoXY(1, 1);
-
-	fflush(stdout);
-
-	return 0;
-}
-
-int m_set_bgcolor(int ind)
-{
-	if (ind == 1) {
-		enum colors a = cyan;
-		mt_ssetbgcolor(a);
-		mt_gotoXY(y_term, x_term - 4);
-		printf("+%.4X", memory[y * 10 + x]);
-		mt_stopcolor();
-	} else if (ind == 0) {
-		mt_stopcolor();
-		mt_gotoXY(y_term, x_term - 4);
-		printf("+%.4X", memory[y * 10 + x]);
-	} else {
-		return 1;
-	}
-	return 0;
-}
-
-int reset_bgcolor()
-{
-	m_set_bgcolor(0);
-	m_set_bgcolor(1);
-	fflush(stdout);
-
-	return 0;
-}
-
-int m_all()
-{
-	enum keys key;
-	//enum keys key_oper;
-
-	m_printAll();
-
-	m_set_bgcolor(1);
-	m_printCase();
-	fflush(stdout);
-
-	while (key != key_q) {
-	//do {
-		rk_readkey(&key);
-
-		if (key == key_s) {
-			sc_memorySave("Test.bin");
-		} else if (key == key_l) {
-			sc_memoryLoad("Test.bin");
-			m_printMemory();
-			mt_gotoXY(23, 1);
-			fflush(stdout);
-		} else if (key == key_up) {
-			if (y != 0) {
-				m_set_bgcolor(0);
-				y--;
-				y_term--;
-				m_set_bgcolor(1);
-			}
-		} else if (key == key_down) {
-			if (y != 9) {
-				m_set_bgcolor(0);
-				y++;
-				y_term++;
-				m_set_bgcolor(1);
-			}
-		} else if (key == key_right) {
-			m_set_bgcolor(0);
-			if (x != 9) {
-				x++;
-				x_term += 6;		
-			} else if (x == 9 && y != 9) {
-				x = 0;
-				x_term = 6;
-				y++;
-				y_term++;
-			}
-			m_set_bgcolor(1);
-		} else if (key == key_left) {
-			m_set_bgcolor(0);
-			if (x != 0) {
-				x--;
-				x_term -= 6;
-			} else if (x == 0 && y != 0) {
-				x = 9;
-				x_term = 60;
-				y--;
-				y_term--;
-			}
-			m_set_bgcolor(1);
-		} else if (key >= 0 && key <= 9) {
-			//mt_gotoXY(25, 1);
-			int value;
-			sc_memoryGet(y * 10 + x, &value);
-			sc_memorySet(y * 10 + x, key + value);
-			m_printMemory();
-			fflush(stdout);
-		} //else if (key == key_plus || key_minus) {
-		// 	key_oper = key;
-		// 	m_printCaseOper(key_oper);
-		// }
-
-		reset_bgcolor();
-		m_printCase();
-
-		mt_gotoXY(23, 1);
-		//printf("y = %d x = %d \n", y, x);
-		//printf("y_term = %d x_term = %d ", y_term, x_term);
-		fflush(stdout);
-	//} while (key != key_q);
-	}
-
-	mt_gotoXY(26, 1);
-
-	return 0;
-}
-
+/* Test lab */
 int test_memory()
 {
 	int value;
@@ -479,6 +429,7 @@ int test_readkey()
 	
 	return 0;
 }
+/* */
 
 void sighandler(int signo)
 {
@@ -522,14 +473,13 @@ int test_signal2()
 
 int main()
 {
-	//test_memory();
-	//test_term();
-	//test_bigchar();
-	//test_readkey();
-	//test_signal1();
-	//test_signal2();
-		
-	//m_printAll();
-	m_all();
+	// test_memory();
+	// test_term();
+	// test_bigchar();
+	// test_readkey();
+	// test_signal1();
+	// test_signal2();
+
+	pa_all();
 	return 0;
 }

@@ -6,7 +6,6 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include "memory.h"
-//#include "myBigChars.h"
 
 enum colors {
 	black = 0,
