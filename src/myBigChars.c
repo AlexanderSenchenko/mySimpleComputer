@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "myBigChars.h"
 
 int bc_printA(char* str)
@@ -13,20 +12,6 @@ int bc_box(int x1, int y1, int x2, int y2)
 		return -1;
 	}
 
-	//mt_clrscr();
-
-	/*
-	mt_gotoXY(x1 - 1, y1);
-	for (int i = 0; i < y2; i++) {
-		printf("%d", i);
-	}
-
-	for (int i = x1; i <  x1 + x2; i++) {
-		mt_gotoXY(i, y1 - 1);
-		printf("%d", i - x1);
-	}
-	*/
-
 	mt_gotoXY(x1, y1);
 	bc_printA(BC_ANGLE_LEFT_UP);
 
@@ -35,7 +20,6 @@ int bc_box(int x1, int y1, int x2, int y2)
 		bc_printA(BC_LINE_HORIZONTAL);
 	}
 
-	//mt_gotoXY(x1, y1 + y2 - 1);
 	bc_printA(BC_ANGLE_RIGHT_UP);
 
 	for (int i = x1 + 1; i <  x1 + x2 - 1; i++) {

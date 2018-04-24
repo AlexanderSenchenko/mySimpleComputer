@@ -1,8 +1,6 @@
 #ifndef MEMORY_H
 #define MEMORY_H
 
-#include "myTerm.h"
-
 #define SIZE 100
 
 #define A 0b00000001//переполнение при выполнение операции
@@ -20,7 +18,6 @@ int sc_memorySet(int, int);
 int sc_memoryGet(int, int*);
 int sc_memorySave(char*);
 int sc_memoryLoad(char*);
-//int sc_memoryPrint();
 
 int sc_regInit();
 int sc_regSet(int, int);

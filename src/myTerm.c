@@ -50,21 +50,3 @@ int mt_stopcolor()
 
 	return 0;
 }
-
-int mt_printterm()
-{
-	mt_gotoXY(1, 28);
-	printf(" Memory ");
-	for (int i = 0; i < 10; i++) {
-		mt_gotoXY(2 + i, 2);
-		for (int j = 0; j < 10; j++) {
-			if (j != 0) {
-				printf(" ");
-			}
-			printf("+%.4X", memory[i * 10 + j]);
-		}
-		printf("\n");
-	}
-
-	return 0;
-}

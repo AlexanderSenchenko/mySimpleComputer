@@ -5,7 +5,6 @@
 #include <unistd.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
-#include "memory.h"
 
 enum colors {
 	black = 0,
@@ -24,6 +23,5 @@ int mt_getscreensize(int *rows, int *cols);
 int mt_ssetfgcolor(enum colors color);
 int mt_ssetbgcolor(enum colors color);
 int mt_stopcolor();
-int mt_printterm();
 
 #endif
