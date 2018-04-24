@@ -57,7 +57,7 @@ int sc_regInit()
 
 int sc_regSet(int reg, int value)
 {
-	if (reg == A || reg == B || reg == C || reg == F || reg == G) {
+	if (reg == P || reg == O || reg == M || reg == T || reg == E) {
 		if (value == 0) {
 			flag = flag & ~reg;
 		} else if (value == 1) {
@@ -71,7 +71,7 @@ int sc_regSet(int reg, int value)
 
 int sc_regGet(int reg, int *value)
 {
-	if (reg == A || reg == B || reg == C || reg == F || reg == G) {
+	if (reg == P || reg == O || reg == M || reg == T || reg == E) {
 		if ((flag & reg) != 0) {
 			*value = 1;
 		} else {

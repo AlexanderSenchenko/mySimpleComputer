@@ -13,6 +13,8 @@
 #define MINI_BOX_ROW 3
 #define MINI_BOX_COLUMN 22
 
+int instructionCounter;
+
 int pa_ProgRun();
 int pa_setBGColor(int ind, int y, int x, int y_term, int x_term);
 int pa_resetBGColor(int y, int x, int y_term, int x_term);
@@ -21,6 +23,7 @@ int pa_initprintMemory();
 int pa_printBoxMemory();
 int pa_printMemory();
 int pa_printAccumulator();
+int pa_printBoxInstructionCounter();
 int pa_printInstructionCounter();
 int pa_printOperation();
 int pa_printFlags();

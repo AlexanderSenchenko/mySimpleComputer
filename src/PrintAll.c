@@ -127,6 +127,7 @@ int pa_printAll(int y, int x, int y_term, int x_term)
 
 	pa_initprintMemory();
 	pa_printAccumulator();
+	pa_printBoxInstructionCounter();
 	pa_printInstructionCounter();
 	pa_printOperation();
 	pa_printFlags();
@@ -189,15 +190,20 @@ int pa_printAccumulator()
 	return 0;
 }
 
+int pa_printBoxInstructionCounter()
+{
+	bc_box(4, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
+	return 0;
+}
+
 int pa_printInstructionCounter()
 {
-	int instructionCounter = 0;
+	// int instructionCounter = 0;
 
-	bc_box(4, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
 	mt_gotoXY(4, 63);
 	printf(" instructionCounter ");
 	mt_gotoXY(5, 70);
-	printf("+%.4d", instructionCounter);
+	printf("+%.4X", instructionCounter);
 
 	return 0;
 }
@@ -215,20 +221,20 @@ int pa_printOperation()
 
 int pa_printFlags()
 {
-	int value_a, value_b, value_c, value_f, value_g;
+	int value_p, value_o, value_m, value_t, value_e;
 
-	sc_regGet(A, &value_a);
-	sc_regGet(B, &value_b);
-	sc_regGet(C, &value_c);
-	sc_regGet(F, &value_f);
-	sc_regGet(G, &value_g);
+	sc_regGet(P, &value_p);
+	sc_regGet(O, &value_o);
+	sc_regGet(M, &value_m);
+	sc_regGet(T, &value_t);
+	sc_regGet(E, &value_e);
 
 	bc_box(10, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
 	mt_gotoXY(10, 69);
 	printf(" Flags ");
 	mt_gotoXY(11, 64);
-	printf("A-%d B-%d C-%d F-%d G-%d", 
-		value_a, value_b, value_c, value_f, value_g);
+	printf("P-%d O-%d M-%d T-%d E-%d", 
+		value_p, value_o, value_m, value_t, value_e);
 
 	return 0;
 }
@@ -247,21 +253,8 @@ int pa_printCase(int y, int x)
 	
 	int value;
 	int rank[4];
-	// int mult = 0;
 	sc_memoryGet(y * 10 + x, &value);
 
-	/* 10 */
-	// for (int i = 38, j = 0; i >= 11; i -= 9, j++) {
-	// 	mult = pow(10, j);
-	// 	rank = value / mult;
-	// 	if (rank > 9) {
-	// 		rank %= 10;
-	// 	}
-
-	// 	m_printCaseBigChar(rank, i);
-	// }
-
-	/* 16 */
 	for (int i = 0; i < 4; ++i) {
 		rank[i] = value % 16;
 		value /= 16;

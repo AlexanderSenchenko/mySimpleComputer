@@ -17,13 +17,13 @@ int test_memory()
 	sc_regInit();
 	sc_regFlagPrint();
 
-	sc_regSet(B, 1);
-	sc_regSet(A, 1);
+	sc_regSet(O, 1);
+	sc_regSet(P, 1);
 	printf("Flag B and A: "); 
 	sc_regFlagPrint();
 
 	
-	sc_regGet(B, &value);
+	sc_regGet(O, &value);
 	printf("Reg B %d\n", value);
 	return 0;
 }
@@ -106,6 +106,7 @@ int test_readkey()
 	return 0;
 }
 
+#if 0
 void sighandler(int signo)
 {
 	printf("Test");
@@ -145,6 +146,103 @@ int test_signal2()
 
 	return 0;
 }
+#endif
+
+void sighandler(int signo)
+{
+	instructionCounter = -1;
+}
+
+int test_lab6()
+{
+	int x = 0;
+	int y = 0;
+	int x_term = 6;
+	int y_term = 2;
+
+	instructionCounter = 0;
+
+	enum keys key;
+
+	pa_printAll(y, x, y_term, x_term);
+	int valueFT;
+
+	while (key != key_q) {
+		rk_readkey(&key);
+
+		signal(SIGUSR1, sighandler);
+
+		if (key == key_s) {
+			sc_memorySave("Test.bin");
+		} else if (key == key_l) {
+			sc_memoryLoad("Test.bin");
+			pa_printMemory();
+			mt_gotoXY(23, 1);
+			fflush(stdout);
+		} else if (key == key_up) {
+
+			raise(SIGUSR1);
+
+			if (y != 0) {
+				pa_setBGColor(0, y, x, y_term, x_term);
+				y--;
+				y_term--;
+				pa_setBGColor(1, y, x, y_term, x_term);
+			}
+		} else if (key == key_down) {
+			if (y != 9) {
+				pa_setBGColor(0, y, x, y_term, x_term);
+				y++;
+				y_term++;
+				pa_setBGColor(1, y, x, y_term, x_term);
+			}
+		} else if (key == key_right) {
+			pa_setBGColor(0, y, x, y_term, x_term);
+			if (x != 9) {
+				x++;
+				x_term += 6;		
+			} else if (x == 9 && y != 9) {
+				x = 0;
+				x_term = 6;
+				y++;
+				y_term++;
+			}
+			pa_setBGColor(1, y, x, y_term, x_term);
+		} else if (key == key_left) {
+			pa_setBGColor(0, y, x, y_term, x_term);
+			if (x != 0) {
+				x--;
+				x_term -= 6;
+			} else if (x == 0 && y != 0) {
+				x = 9;
+				x_term = 60;
+				y--;
+				y_term--;
+			}
+			pa_setBGColor(1, y, x, y_term, x_term);
+		} else if (key >= 0 && key <= 9) {
+			int value;
+			sc_memoryGet(y * 10 + x, &value);
+			sc_memorySet(y * 10 + x, key + value);
+		}
+
+		sc_regGet(T, &valueFT);
+		if (valueFT == 0) {
+			instructionCounter++;
+			pa_printInstructionCounter();
+		}
+
+		pa_resetBGColor(y, x, y_term, x_term);
+		pa_printCase(y, x);
+
+		mt_gotoXY(26, 1);
+
+		fflush(stdout);
+	}
+
+	return 0;
+}
+
 /* */
 
 int main()
@@ -155,7 +253,8 @@ int main()
 	// test_readkey();
 	// test_signal1();
 	// test_signal2();
+	test_lab6();
 
-	pa_ProgRun();
+	// pa_ProgRun();
 	return 0;
 }
