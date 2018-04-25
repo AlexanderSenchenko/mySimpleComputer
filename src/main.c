@@ -3,6 +3,22 @@
 #include <signal.h>
 #include <sys/time.h>
 
+typedef struct tCHS {
+
+} tCHS;
+
+typedef struct tLARGE {
+
+} tLARGE;
+
+typedef struct tIDECHS {
+
+} tIDECHS;
+
+typedef struct tLBA {
+
+} tLBA;
+
 /* Test lab */
 int test_memory()
 {
@@ -106,48 +122,6 @@ int test_readkey()
 	return 0;
 }
 
-#if 0
-void sighandler(int signo)
-{
-	printf("Test");
-}
-
-int test_signal1()
-{
-	int x = 0;
-
-	signal(SIGUSR1, sighandler);
-	do {
-		printf("Input x = ");
-		scanf("%d", &x);
-		if (x & 0x0A)
-			raise(SIGUSR1);
-	} while (x != 99);
-
-	return 0;
-}
-
-int test_signal2()
-{
-	struct itimerval nval, oval;
-
-	signal(SIGALRM, sighandler);
-
-	nval.it_interval.tv_sec = 3;
-	nval.it_interval.tv_usec = 500;
-	nval.it_value.tv_sec = 1;
-	nval.it_value.tv_usec = 0;
-
-	setitimer(ITIMER_REAL, &nval, &oval);
-
-	while (1) {
-		pause();
-	}
-
-	return 0;
-}
-#endif
-
 void sighandler(int signo)
 {
 	instructionCounter = -1;
@@ -242,7 +216,6 @@ int test_lab6()
 
 	return 0;
 }
-
 /* */
 
 int main()
@@ -251,9 +224,7 @@ int main()
 	// test_term();
 	// test_bigchar();
 	// test_readkey();
-	// test_signal1();
-	// test_signal2();
-	test_lab6();
+	// test_lab6();
 
 	// pa_ProgRun();
 	return 0;
