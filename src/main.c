@@ -3,28 +3,8 @@
 #include <signal.h>
 #include <sys/time.h>
 
-<<<<<<< HEAD
 #include "transGeomAdd.h"
 
-||||||| merged common ancestors
-=======
-typedef struct tCHS {
-
-} tCHS;
-
-typedef struct tLARGE {
-
-} tLARGE;
-
-typedef struct tIDECHS {
-
-} tIDECHS;
-
-typedef struct tLBA {
-
-} tLBA;
-
->>>>>>> 4222ffe912c42e76717c764218a5292aff241ddb
 /* Test lab */
 int test_memory()
 {
