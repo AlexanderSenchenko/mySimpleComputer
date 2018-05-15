@@ -3,6 +3,8 @@
 #include <signal.h>
 #include <sys/time.h>
 
+#include "transGeomAdd.h"
+
 /* Test lab */
 int test_memory()
 {
@@ -106,54 +108,12 @@ int test_readkey()
 	return 0;
 }
 
-#if 0
-void sighandler(int signo)
-{
-	printf("Test");
-}
-
-int test_signal1()
-{
-	int x = 0;
-
-	signal(SIGUSR1, sighandler);
-	do {
-		printf("Input x = ");
-		scanf("%d", &x);
-		if (x & 0x0A)
-			raise(SIGUSR1);
-	} while (x != 99);
-
-	return 0;
-}
-
-int test_signal2()
-{
-	struct itimerval nval, oval;
-
-	signal(SIGALRM, sighandler);
-
-	nval.it_interval.tv_sec = 3;
-	nval.it_interval.tv_usec = 500;
-	nval.it_value.tv_sec = 1;
-	nval.it_value.tv_usec = 0;
-
-	setitimer(ITIMER_REAL, &nval, &oval);
-
-	while (1) {
-		pause();
-	}
-
-	return 0;
-}
-#endif
-
 void sighandler(int signo)
 {
 	instructionCounter = -1;
 }
 
-int test_lab6()
+int test_signal()
 {
 	int x = 0;
 	int y = 0;
@@ -243,17 +203,41 @@ int test_lab6()
 	return 0;
 }
 
+int test_trans()
+{
+	tCHS chs;
+	tCHS chs_geom;
+	// tLARGE large;
+	tLBA lba;
+	// tIDECHS idechs;
+
+	// 15704065 10018890
+	lba = 15704065;
+	printf("LBA: %d\n", lba);
+
+	g_lba2chs(lba, &chs_geom);
+	printf("CHS_GEOM: %d %d %d\n", chs_geom.c, chs_geom.h, chs_geom.s);
+
+	a_lba2chs(chs_geom, lba, &chs);
+	printf("CHS: %d %d %d\n", chs.c, chs.h, chs.s);
+	printf("CHS_GEOM: %d %d %d\n", chs_geom.c, chs_geom.h, chs_geom.s);
+
+	a_chs2lba(chs_geom, chs, &lba);
+	printf("LBA: %d\n", lba);
+
+	return 0;
+}
+
 /* */
 
 int main()
 {
-	// test_memory();
-	// test_term();
-	// test_bigchar();
-	// test_readkey();
-	// test_signal1();
-	// test_signal2();
-	test_lab6();
+	// test_memory();	// 2
+	// test_term();		// 3
+	// test_bigchar();	// 4
+	// test_readkey();	// 5
+	// test_signal();	// 6
+	test_trans();	// 7
 
 	// pa_ProgRun();
 	return 0;
