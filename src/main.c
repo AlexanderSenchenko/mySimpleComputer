@@ -5,6 +5,21 @@
 
 #include "transGeomAdd.h"
 
+typedef struct {
+    uint8_t active;
+    uint8_t type;
+    tCHS chs_start;
+    tLBA l_start;
+    tCHS chs_end;
+    int32_t sectors;
+    tLBA end;
+} Record;
+
+typedef struct {
+    uint8_t full;
+    Record records[4];
+} Table;
+
 /* Test lab */
 int test_memory()
 {
@@ -207,7 +222,7 @@ int test_trans()
 {
 	tCHS chs;
 	tCHS chs_geom;
-	// tLARGE large;
+	tLARGE large;
 	tLBA lba;
 	// tIDECHS idechs;
 
@@ -220,10 +235,17 @@ int test_trans()
 
 	a_lba2chs(chs_geom, lba, &chs);
 	printf("CHS: %d %d %d\n", chs.c, chs.h, chs.s);
-	printf("CHS_GEOM: %d %d %d\n", chs_geom.c, chs_geom.h, chs_geom.s);
 
+	// lba = 0;
+	// g_chs2lba(chs, &lba);
+	// printf("LBA: %d\n", lba);
+
+	lba = 0;
 	a_chs2lba(chs_geom, chs, &lba);
 	printf("LBA: %d\n", lba);
+
+
+	printf("LARGE: %d %d %d\n", large.c, large.h, large.s);
 
 	return 0;
 }
@@ -232,12 +254,12 @@ int test_trans()
 
 int main()
 {
-	// test_memory();	// 2
-	// test_term();		// 3
-	// test_bigchar();	// 4
-	// test_readkey();	// 5
-	// test_signal();	// 6
-	test_trans();	// 7
+	// test_memory();
+	// test_term();
+	// test_bigchar();
+	// test_readkey();
+	// test_signal();
+	test_trans();
 
 	// pa_ProgRun();
 	return 0;

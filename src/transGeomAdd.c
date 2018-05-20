@@ -2,43 +2,43 @@
 
 int g_lba2chs(tLBA lba_geom, tCHS *chs_geom)
 {
-	// tCHS best = {0, 0, 63};
-	// for (uint16_t i = 0; i < 256; ++i) {
-	// 	for (uint16_t j = 0; j < 1024; ++j) {
-	// 		int64_t dif = (int64_t) (lba_geom) - 63 * i * j;
-	// 		int64_t b_dif = (int64_t) (lba_geom) - 63 * best.c * best.h;
-	// 		if (dif >= 0 && dif <= b_dif) {
-	// 			best.h = (uint8_t) i;
-	// 			best.c = j;
-	// 		}
-	// 	}
-	// }
-	// chs_geom->c = best.c;
-	// chs_geom->h = best.h;
-	// chs_geom->s = 63;
-
-	tCHS geom = {0, 0, 63};
-	int L1 = lba_geom / geom.s;
-	// printf("%d\n", L1);
-
-	int pow = 2;
-	int L2 = L1 / 1023;
-	while (pow < L2 && pow < 256)
-		pow *= 2;
-	
-	// printf("%d\n", pow);
-
-	if (pow == 256) {
-		geom.h = (uint8_t) pow - 1;
-	} else {
-		geom.h = (uint8_t) pow;
+	tCHS best = {0, 0, 63};
+	for (uint16_t i = 0; i < 256; ++i) {
+		for (uint16_t j = 0; j < 1024; ++j) {
+			int64_t dif = (int64_t) (lba_geom) - 63 * i * j;
+			int64_t b_dif = (int64_t) (lba_geom) - 63 * best.c * best.h;
+			if (dif >= 0 && dif <= b_dif) {
+				best.h = (uint8_t) i;
+				best.c = j;
+			}
+		}
 	}
+	chs_geom->c = best.c;
+	chs_geom->h = best.h;
+	chs_geom->s = 63;
 
-	geom.c = L1 / geom.h;
+	// tCHS geom = {0, 0, 63};
+	// int L1 = lba_geom / geom.s;
+	// // printf("%d\n", L1);
 
-	chs_geom->c = geom.c;
-	chs_geom->h = geom.h;
-	chs_geom->s = geom.s;
+	// int pow = 2;
+	// int L2 = L1 / 1023;
+	// while (pow < L2 && pow < 256)
+	// 	pow *= 2;
+	
+	// // printf("%d\n", pow);
+
+	// if (pow == 256) {
+	// 	geom.h = (uint8_t) pow - 1;
+	// } else {
+	// 	geom.h = (uint8_t) pow;
+	// }
+
+	// geom.c = L1 / geom.h;
+
+	// chs_geom->c = geom.c;
+	// chs_geom->h = geom.h;
+	// chs_geom->s = geom.s;
 
     return 0;
 }
@@ -85,55 +85,55 @@ int g_chs2lba(tCHS chs_geom, tLBA *lba_geom)
 	return 0;
 }
 
-int g_chs2idechs(tCHS chs_geometry, tIDECHS *idechs_geometry)
+int g_chs2idechs(tCHS chs_geom, tIDECHS *idechs_geom)
 {
 	tLBA lba_geom;
-	g_chs2lba(chs_geometry, &lba_geom);
-	g_lba2idechs(lba_geom, idechs_geometry);
+	g_chs2lba(chs_geom, &lba_geom);
+	g_lba2idechs(lba_geom, idechs_geom);
 	return 0;
 }
 
-int g_large2lba(tLARGE large_geometry, tLBA *lba_geometry)
+int g_large2lba(tLARGE large_geom, tLBA *lba_geom)
 {
-	*lba_geometry = large_geometry.c * large_geometry.h * large_geometry.s;
+	*lba_geom = large_geom.c * large_geom.h * large_geom.s;
 	return 0;
 }
 
-int g_large2chs(tLARGE large_geometry, tCHS *chs_geometry)
-{
-	tLBA lba_geom;
-	g_large2lba(large_geometry, &lba_geom);
-	g_lba2chs(lba_geom, chs_geometry);
-	return 0;
-}
-
-int g_large2idechs(tLARGE large_geometry, tIDECHS *idechs_geometry)
+int g_large2chs(tLARGE large_geom, tCHS *chs_geom)
 {
 	tLBA lba_geom;
-	g_large2lba(large_geometry, &lba_geom);
-	g_lba2idechs(lba_geom, idechs_geometry);
+	g_large2lba(large_geom, &lba_geom);
+	g_lba2chs(lba_geom, chs_geom);
 	return 0;
 }
 
-int g_idechs2lba(tIDECHS idechs_geometry, tLBA *lba_geometry)
+int g_large2idechs(tLARGE large_geom, tIDECHS *idechs_geom)
 {
-	*lba_geometry = idechs_geometry.c * idechs_geometry.h * idechs_geometry.s;
+	tLBA lba_geom;
+	g_large2lba(large_geom, &lba_geom);
+	g_lba2idechs(lba_geom, idechs_geom);
 	return 0;
 }
 
-int g_idechs2chs(tIDECHS idechs_geometry, tCHS *chs_geometry)
+int g_idechs2lba(tIDECHS idechs_geom, tLBA *lba_geom)
+{
+	*lba_geom = idechs_geom.c * idechs_geom.h * idechs_geom.s;
+	return 0;
+}
+
+int g_idechs2chs(tIDECHS idechs_geom, tCHS *chs_geom)
 {
 	tLBA lba;
-	g_idechs2lba(idechs_geometry, &lba);
-	g_lba2chs(lba, chs_geometry);
+	g_idechs2lba(idechs_geom, &lba);
+	g_lba2chs(lba, chs_geom);
 	return 0;
 }
 
-int g_idechs2large(tIDECHS idechs_geometry, tLARGE *large_geometry)
+int g_idechs2large(tIDECHS idechs_geom, tLARGE *large_geom)
 {
 	tLBA lba;
-	g_idechs2lba(idechs_geometry, &lba);
-	g_lba2large(lba, large_geometry);
+	g_idechs2lba(idechs_geom, &lba);
+	g_lba2large(lba, large_geom);
 	return 0;
 }
 
