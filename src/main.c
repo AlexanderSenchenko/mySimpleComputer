@@ -11,7 +11,7 @@ typedef struct {
     tCHS chs_start;
     tLBA l_start;
     tCHS chs_end;
-    int32_t sectors;
+    int32_t ss;
     tLBA end;
 } Record;
 
@@ -250,6 +250,149 @@ int test_trans()
 	return 0;
 }
 
+void smain() {
+	tLBA lba = 2046;
+	tCHS chs;
+	tIDECHS idechs;
+	tLARGE large;
+	g_lba2chs(lba, &chs);
+	printf("CHS: %d/%d/%d\n", chs.c, chs.h, chs.s);
+	g_chs2lba(chs, &lba);
+	printf("LBA: %d\n", lba);
+	lba = 52864;
+	g_lba2idechs(lba, &idechs);
+	printf("IDECHS: %d/%d/%d\n", idechs.c, idechs.h, idechs.s);
+	g_idechs2lba(idechs, &lba);
+	printf("LBA: %d\n", lba);
+	lba = 52864;
+	g_lba2large(lba, &large);
+	printf("LARGE: %d/%d/%d\n", large.c, large.h, large.s);
+	g_large2lba(large, &lba);
+	printf("LBA: %d\n", lba);
+}
+
+void nmain() {
+	tLBA lba = 900;
+	tCHS chs;
+	tCHS c_geom;
+	c_geom.c = 1024;
+	c_geom.h = 16;
+	c_geom.s = 63;
+	printf("CHS geom: %d/%d/%d\n", c_geom.c, c_geom.h, c_geom.s);
+	a_lba2chs(c_geom, lba, &chs);
+	printf("CHS: %d/%d/%d\n", chs.c, chs.h, chs.s);
+
+	tLARGE large;
+	tLARGE l_geom;
+	g_chs2large(c_geom, &l_geom);
+	a_lba2large(l_geom, lba, &large);
+	printf("LARGE: %d/%d/%d\n", large.c, large.h, large.s);
+
+	tIDECHS idechs;
+	tIDECHS idechs_geom;
+	g_chs2idechs(c_geom, &idechs_geom);
+	a_lba2idechs(idechs_geom, lba, &idechs);
+	printf("IDECHS: %d/%d/%d\n", idechs.c, idechs.h, idechs.s);
+
+	tLBA lbachs;
+	tLBA lb_g;
+	g_chs2lba(c_geom, &lb_g);
+	a_chs2lba(c_geom, chs, &lbachs);
+	tLBA lbaide;
+	a_idechs2lba(idechs_geom, idechs, &lbaide);
+	tLBA lbalarge;
+	a_large2lba(l_geom, large, &lbalarge);
+	printf("%d/%d/%d\n", lbachs, lbaide, lbalarge);
+}
+
+int dmain() {
+	tIDECHS idechs;
+	int hs = 0;
+	int ss = 0;
+	printf("Enter disk geometry in \"<c> <hs> <ss>\" format: ");
+	scanf("%hu%d%d", &idechs.c, &hs, &ss);
+	idechs.h = (uint8_t) (hs);
+	idechs.s = (uint8_t) (ss);
+	int32_t size = ((idechs.c + 1) * (idechs.h + 1) * idechs.s * 512) / (1024 * 1024);
+	int32_t free_size = size;
+	printf("Size is %d GB\n", size);
+	uint8_t was_active = 0;
+	tLBA now_at = 1;
+	uint32_t table_num = 0;
+	Table tables[1024];
+	for (uint64_t i = 0; i < 1024; ++i)
+	    tables[i].full = 0;
+
+	tLBA l_geom;
+	g_idechs2lba(idechs, &l_geom);
+	const uint8_t types[10] = {0, 0x1, 0x4, 0x5, 0x6, 0x7, 0xc, 0xd, 0x82, 0x83};
+	while (1) {
+	    if (tables[table_num].full >= 4)
+	        break;
+
+	    int32_t size_to_create = 0;
+	    printf("Enter size of the section in GB:\n");
+	    scanf("%d", &size_to_create);
+	    if (size_to_create == 0)
+	        break;
+
+	    if (free_size - size_to_create < 0) {
+	        printf("Section is too big.\n");
+	        continue;
+	    }
+	    free_size -= size_to_create;
+	    tables[table_num].records[tables[table_num].full].ss = size_to_create * 1024 * 1024 / 512;
+	    printf("Choose type:\n1.Empty\n2.FAT12\n3.FAT16<32M\n4.Extended\n5.MS-DOS FAT16\n");
+	    printf("6.NTFS\n7.FAT32\n8.FAT16\n9.Linux swap\n10.Linux\n");
+	    int32_t type = 0;
+	    scanf("%d", &type);
+	    while (type < 1 || type > 10) {
+	        printf("Come again:\n");
+	        scanf("%d", &type);
+	    }
+	    --type;
+	    tables[table_num].records[tables[table_num].full].type = types[type];
+	    if (!was_active) {
+	        printf("Is active? y/n\n");
+	        char c[10];
+	        scanf("%10s", c);
+	        if (c[0] == 'y') {
+	            was_active = 1;
+	            tables[table_num].records[tables[table_num].full].active = 1;
+	        }
+	    }
+	    tables[table_num].records[tables[table_num].full].l_start = now_at;
+	    tLBA tmp = now_at;
+	    now_at = now_at + tables[table_num].records[tables[table_num].full].ss;
+	    tables[table_num].records[tables[table_num].full].end = now_at;
+	    tCHS chs_geom;
+	    g_idechs2chs(idechs, &chs_geom);
+	    a_lba2chs(chs_geom, tables[table_num].records[tables[table_num].full].l_start, &tables[table_num].records[tables[table_num].full].chs_start);
+	    a_lba2chs(chs_geom, now_at - 1, &tables[table_num].records[tables[table_num].full].chs_end);
+	    ++tables[table_num].full;
+	    if (type == 3) {
+	        now_at = tmp + 2;
+	        ++table_num;
+	    }
+	}
+	printf("Active Start           End          ss           Size           Type\n");
+	for (uint64_t k = 0; k <= table_num; ++k) {
+	    for (uint64_t i = 0; i < tables[k].full; ++i) {
+	        if (tables[k].records[i].active == 1) {
+	            printf("*      ");
+	        } else {
+	            printf("       ");
+	        }
+	        printf("%-15d ", tables[k].records[i].l_start);
+	        printf("%-12d ", tables[k].records[i].end);
+	        printf("%-17d ", tables[k].records[i].ss);
+	        printf("%-14d ", tables[k].records[i].ss * 512);
+	        printf("%-4x\n", tables[k].records[i].type);
+	    }
+	}
+	return 0;
+}
+
 /* */
 
 int main()
@@ -259,7 +402,13 @@ int main()
 	// test_bigchar();
 	// test_readkey();
 	// test_signal();
-	test_trans();
+
+	// test_trans();
+	smain();
+	printf("\n");
+	nmain();
+	printf("\n");
+	// dmain();
 
 	// pa_ProgRun();
 	return 0;

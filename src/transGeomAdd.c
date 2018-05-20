@@ -16,30 +16,6 @@ int g_lba2chs(tLBA lba_geom, tCHS *chs_geom)
 	chs_geom->c = best.c;
 	chs_geom->h = best.h;
 	chs_geom->s = 63;
-
-	// tCHS geom = {0, 0, 63};
-	// int L1 = lba_geom / geom.s;
-	// // printf("%d\n", L1);
-
-	// int pow = 2;
-	// int L2 = L1 / 1023;
-	// while (pow < L2 && pow < 256)
-	// 	pow *= 2;
-	
-	// // printf("%d\n", pow);
-
-	// if (pow == 256) {
-	// 	geom.h = (uint8_t) pow - 1;
-	// } else {
-	// 	geom.h = (uint8_t) pow;
-	// }
-
-	// geom.c = L1 / geom.h;
-
-	// chs_geom->c = geom.c;
-	// chs_geom->h = geom.h;
-	// chs_geom->s = geom.s;
-
     return 0;
 }
 
@@ -163,7 +139,8 @@ int a_lba2large(tLARGE chs_geom, tLBA lba, tLARGE *chs)
 
 int a_chs2lba(tCHS geom, tCHS chs, tLBA *lba)
 {
-	*lba = (uint32_t) (chs.c * geom.h + chs.h) * geom.s + chs.s - 1;
+	// *lba = (uint32_t) (chs.c * geom.h + chs.h) * geom.s + chs.s - 1;
+	*lba = (uint32_t) (chs.c * geom.h + chs.h * geom.s + chs.s - 1);
 	return 0;
 }
 
