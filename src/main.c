@@ -404,12 +404,12 @@ int main()
 	// test_signal();
 
 	// test_trans();
-	smain();
-	printf("\n");
-	nmain();
-	printf("\n");
+	// smain();
+	// printf("\n");
+	// nmain();
+	// printf("\n");
 	// dmain();
 
-	// pa_ProgRun();
+	pa_ProgRun();
 	return 0;
 }

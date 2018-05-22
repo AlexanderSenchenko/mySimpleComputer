@@ -84,6 +84,7 @@ int pa_ProgRun()
 		}
 
 		pa_resetBGColor(y, x, y_term, x_term);
+		pa_printOperation(y, x);
 		pa_printCase(y, x);
 
 		mt_gotoXY(26, 1);
@@ -126,16 +127,24 @@ int pa_printAll(int y, int x, int y_term, int x_term)
 	mt_clrscr();
 
 	pa_initprintMemory();
+
+	pa_printBoxAccumulator();
 	pa_printAccumulator();
+
 	pa_printBoxInstructionCounter();
 	pa_printInstructionCounter();
-	pa_printOperation();
-	pa_printFlags();
-	pa_printBoxCase();
-	pa_printKeys();
 
+	pa_printBoxOperation();
+	pa_printOperation(y, x);
+
+	pa_printBoxFlags();
+	pa_printFlags();
+
+	pa_printBoxCase();
 	pa_setBGColor(1, y, x, y_term, x_term);
 	pa_printCase(y, x);
+
+	pa_printKeys();
 
 	mt_gotoXY(26, 1);
 
@@ -156,13 +165,13 @@ int pa_initprintMemory()
 int pa_printBoxMemory()
 {
 	bc_box(1, 1, BOX_ROW_MEMORY, BOX_COLUMN_MEMORY);
+	mt_gotoXY(1, 28);
+	printf(" Memory ");
 	return 0;
 }
 
 int pa_printMemory()
 {
-	mt_gotoXY(1, 28);
-	printf(" Memory ");
 	for (int i = 0; i < 10; i++) {
 		mt_gotoXY(2 + i, 2);
 		for (int j = 0; j < 10; j++) {
@@ -173,7 +182,14 @@ int pa_printMemory()
 		}
 		printf("\n");
 	}
+	return 0;
+}
 
+int pa_printBoxAccumulator()
+{
+	bc_box(1, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
+	mt_gotoXY(1, 67);
+	printf(" accumulator ");
 	return 0;
 }
 
@@ -181,41 +197,49 @@ int pa_printAccumulator()
 {
 	int accumulator = 9999;
 
-	bc_box(1, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
-	mt_gotoXY(1, 67);
-	printf(" accumulator ");
 	mt_gotoXY(2, 70);
 	printf("+%d", accumulator);
-
 	return 0;
 }
 
 int pa_printBoxInstructionCounter()
 {
 	bc_box(4, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
+	mt_gotoXY(4, 63);
+	printf(" instructionCounter ");
 	return 0;
 }
 
 int pa_printInstructionCounter()
 {
 	// int instructionCounter = 0;
-
-	mt_gotoXY(4, 63);
-	printf(" instructionCounter ");
 	mt_gotoXY(5, 70);
 	printf("+%.4X", instructionCounter);
-
 	return 0;
 }
 
-int pa_printOperation()
+int pa_printBoxOperation()
 {
 	bc_box(7, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
 	mt_gotoXY(7, 68);
 	printf(" Operation ");
-	mt_gotoXY(8, 69);
-	printf("+00 : 00");
+	return 0;
+}
 
+int pa_printOperation(int y, int x)
+{
+	int value;
+	sc_memoryGet(y * 10 + x, &value);
+	mt_gotoXY(8, 69);
+	printf("+%.2x : %.2x", (value >> 7) & 0x7F, value & 0x7F);
+	return 0;
+}
+
+int pa_printBoxFlags()
+{
+	bc_box(10, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
+	mt_gotoXY(10, 69);
+	printf(" Flags ");
 	return 0;
 }
 
@@ -229,9 +253,6 @@ int pa_printFlags()
 	sc_regGet(T, &value_t);
 	sc_regGet(E, &value_e);
 
-	bc_box(10, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
-	mt_gotoXY(10, 69);
-	printf(" Flags ");
 	mt_gotoXY(11, 64);
 	printf("P-%d O-%d M-%d T-%d E-%d", 
 		value_p, value_o, value_m, value_t, value_e);
