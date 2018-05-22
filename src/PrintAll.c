@@ -83,11 +83,15 @@ int pa_ProgRun()
 			sc_memorySet(y * 10 + x, key + value);
 		}
 
+		CU();
+
 		pa_resetBGColor(y, x, y_term, x_term);
 		pa_printOperation(y, x);
 		pa_printCase(y, x);
+		pa_printFlags();
+		pa_printAccumulator();
 
-		mt_gotoXY(26, 1);
+		mt_gotoXY(28, 1);
 
 		fflush(stdout);
 	}
@@ -146,7 +150,7 @@ int pa_printAll(int y, int x, int y_term, int x_term)
 
 	pa_printKeys();
 
-	mt_gotoXY(26, 1);
+	mt_gotoXY(28, 1);
 
 	fflush(stdout);
 
@@ -195,10 +199,8 @@ int pa_printBoxAccumulator()
 
 int pa_printAccumulator()
 {
-	int accumulator = 9999;
-
 	mt_gotoXY(2, 70);
-	printf("+%d", accumulator);
+	printf("+%.4x", accumulator);
 	return 0;
 }
 
@@ -212,7 +214,6 @@ int pa_printBoxInstructionCounter()
 
 int pa_printInstructionCounter()
 {
-	// int instructionCounter = 0;
 	mt_gotoXY(5, 70);
 	printf("+%.4X", instructionCounter);
 	return 0;
@@ -254,8 +255,7 @@ int pa_printFlags()
 	sc_regGet(E, &value_e);
 
 	mt_gotoXY(11, 64);
-	printf("P-%d O-%d M-%d T-%d E-%d", 
-		value_p, value_o, value_m, value_t, value_e);
+	printf("P-%d O-%d M-%d T-%d E-%d", value_p, value_o, value_m, value_t, value_e);
 
 	return 0;
 }

@@ -6,14 +6,13 @@
 #include "myTerm.h"
 #include "myBigChars.h"
 #include "myReadkey.h"
+#include "cpu.h"
 
 #define BOX_ROW_MEMORY 12
 #define BOX_COLUMN_MEMORY 61
 
 #define MINI_BOX_ROW 3
 #define MINI_BOX_COLUMN 22
-
-int instructionCounter;
 
 int pa_ProgRun();
 int pa_setBGColor(int ind, int y, int x, int y_term, int x_term);

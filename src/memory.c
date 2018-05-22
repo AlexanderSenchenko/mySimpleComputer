@@ -12,7 +12,7 @@ int sc_memoryInit()
 int sc_memorySet(int address, int value)
 {
 	if (address >= SIZE || address < 0)
-		return 1;//выход за границы памяти
+		return 1;	//выход за границы памяти
 
 	memory[address] = value;
 	
