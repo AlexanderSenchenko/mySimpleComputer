@@ -38,30 +38,23 @@ int pa_ProgRun()
 	int value = 0;
 	value = (value | 0x20) << 7;
 	value |= 99;
-	sc_memorySet(1, value);
+	sc_memorySet(0, value);
 
 	value = 0;
 	value = (value | 0x32) << 7;
 	value |= 98;
+	sc_memorySet(1, value);
+
+	value = 0;
+	value = (value | 0x21) << 7;
+	value |= 96;
 	sc_memorySet(2, value);
 
 	value = 0;
-	value = (value | 0x21) << 7;
-	value |= 96;
+	value = (value | 0x43) << 7;
 	sc_memorySet(3, value);
 
-	value = 0;
-	value = (value | 0x21) << 7;
-	value |= 96;
-	sc_memorySet(4, value);
-
 	pa_resetTerm(y, x, y_term, x_term);
-	#endif
-
-	#if 0
-	for () {
-
-	}
 	#endif
 
 	while (key != key_q) {
@@ -73,16 +66,48 @@ int pa_ProgRun()
 		{
 			case key_l:
 				sc_memoryLoad("Test.bin");
-				pa_printMemory();
-				mt_gotoXY(23, 1);
-				fflush(stdout);
 				break;
 			case key_s:
 				sc_memorySave("Test.bin");
 				break;
 			case key_r:
+				x = 0;
+				y = 0;
+				x_term = 6;
+				y_term = 2;
+				
+				instructionCounter = y * 10 + x;
+				
+				while (!CU()) {
+					pa_resetTerm(y, x, y_term, x_term);
+					if (x != 9) {
+						x++;
+						x_term += 6;		
+					} else if (x == 9 && y != 9) {
+						x = 0;
+						x_term = 6;
+						y++;
+						y_term++;
+					}
+					instructionCounter++;
+					sleep(1);
+				}
+				pa_resetTerm(y, x, y_term, x_term);
 				break;
 			case key_tt:
+				CU();
+				pa_resetTerm(y, x, y_term, x_term);
+				if (x != 9) {
+					x++;
+					x_term += 6;		
+				} else if (x == 9 && y != 9) {
+					x = 0;
+					x_term = 6;
+					y++;
+					y_term++;
+				}
+				instructionCounter++;
+				// sleep(1);
 				break;
 			case key_i:
 				pa_initComp();
@@ -151,9 +176,9 @@ int pa_ProgRun()
 
 		instructionCounter = y * 10 + x;
 
-		CU();
+		// CU();
 
-		pa_resetTerm(y, x, y_term, x_term);
+		// pa_resetTerm(y, x, y_term, x_term);
 	}
 
 	return 0;

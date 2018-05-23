@@ -24,7 +24,7 @@ int CU()
 	if (command >= 0x30 && command <= 0x33) {
 		ALU(command, operand);
 	} else {
-		#if 1
+		#if 0
 		mt_gotoXY(23, 1);
 		printf("___________________\n");
 		printf("___________________\n");
@@ -54,6 +54,9 @@ int CU()
 			case JZ:
 				break;
 			case HALT:
+				mt_gotoXY(23, 1);
+				printf("End\n");
+				return 1;
 				break;
 		}
 	}
