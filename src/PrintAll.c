@@ -32,55 +32,85 @@ int pa_ProgRun()
 	while (key != key_q) {
 		rk_readkey(&key);
 
-		if (key == key_s) {
-			sc_memorySave("Test.bin");
-		} else if (key == key_l) {
-			sc_memoryLoad("Test.bin");
-			pa_printMemory();
-			mt_gotoXY(23, 1);
-			fflush(stdout);
-		} else if (key == key_up) {
-			if (y != 0) {
+		int value;
+
+		switch (key)
+		{
+			case key_l:
+				sc_memoryLoad("Test.bin");
+				pa_printMemory();
+				mt_gotoXY(23, 1);
+				fflush(stdout);
+				break;
+			case key_s:
+				sc_memorySave("Test.bin");
+				break;
+			case key_r:
+				break;
+			case key_tt:
+				break;
+			case key_i:
+				break;
+			case key_f5:
+				break;
+			case key_f6:
+				break;
+			case key_up:
+				if (y != 0) {
+					pa_setBGColor(0, y, x, y_term, x_term);
+					y--;
+					y_term--;
+					pa_setBGColor(1, y, x, y_term, x_term);
+				}
+				break;
+			case key_down:
+				if (y != 9) {
+					pa_setBGColor(0, y, x, y_term, x_term);
+					y++;
+					y_term++;
+					pa_setBGColor(1, y, x, y_term, x_term);
+				}
+				break;
+			case key_right:
 				pa_setBGColor(0, y, x, y_term, x_term);
-				y--;
-				y_term--;
+				if (x != 9) {
+					x++;
+					x_term += 6;		
+				} else if (x == 9 && y != 9) {
+					x = 0;
+					x_term = 6;
+					y++;
+					y_term++;
+				}
 				pa_setBGColor(1, y, x, y_term, x_term);
-			}
-		} else if (key == key_down) {
-			if (y != 9) {
+				break;
+			case key_left:
 				pa_setBGColor(0, y, x, y_term, x_term);
-				y++;
-				y_term++;
+				if (x != 0) {
+					x--;
+					x_term -= 6;
+				} else if (x == 0 && y != 0) {
+					x = 9;
+					x_term = 60;
+					y--;
+					y_term--;
+				}
 				pa_setBGColor(1, y, x, y_term, x_term);
-			}
-		} else if (key == key_right) {
-			pa_setBGColor(0, y, x, y_term, x_term);
-			if (x != 9) {
-				x++;
-				x_term += 6;		
-			} else if (x == 9 && y != 9) {
-				x = 0;
-				x_term = 6;
-				y++;
-				y_term++;
-			}
-			pa_setBGColor(1, y, x, y_term, x_term);
-		} else if (key == key_left) {
-			pa_setBGColor(0, y, x, y_term, x_term);
-			if (x != 0) {
-				x--;
-				x_term -= 6;
-			} else if (x == 0 && y != 0) {
-				x = 9;
-				x_term = 60;
-				y--;
-				y_term--;
-			}
-			pa_setBGColor(1, y, x, y_term, x_term);
-		} else if (key >= 0 && key <= 9) {
-			int value;
-			sc_memoryGet(y * 10 + x, &value);
-			sc_memorySet(y * 10 + x, key + value);
+				break;
+			case key_f:
+				value = 0;
+				sc_memoryGet(y * 10 + x, &value);
+				if (sc_memorySet(y * 10 + x, 100 + value) == 1)
+					sc_regSet(P, 1);
+				break;
+			default:
+				if (key >= 0 && key <= 9) {
+					int value;
+					sc_memoryGet(y * 10 + x, &value);
+					if (sc_memorySet(y * 10 + x, key + value) == 1)
+						sc_regSet(P, 1);
+				}
+				break;
 		}
 
 		CU();
