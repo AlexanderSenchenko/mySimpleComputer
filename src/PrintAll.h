@@ -18,7 +18,7 @@ int pa_ProgRun();
 int pa_setBGColor(int ind, int y, int x, int y_term, int x_term);
 int pa_resetBGColor(int y, int x, int y_term, int x_term);
 int pa_printAll(int y, int x, int y_term, int x_term);
-int pa_initprintMemory();
+int pa_initPrintMemory();
 int pa_printBoxMemory();
 int pa_printMemory();
 int pa_printBoxAccumulator();

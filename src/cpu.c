@@ -8,7 +8,7 @@ int CU()
 
 	sc_memoryGet(instructionCounter, &value);
 
-	if (sc_commandDecode(value, &command, &operand) == 1) {
+	if (sc_commandDecode(value, &command, &operand)) {
 		sc_regSet(E, 1);
 		sc_regSet(T, 1);
 		return 1;
@@ -38,13 +38,22 @@ int CU()
 				// mt_gotoXY(23, 1);
 				// printf("Command %.2x\n", command);
 				// printf("Kek, you are stupid\n");
-				accumulator = operand;
+
+				// accumulator = operand;
+
+				sc_memoryGet(operand, &accumulator);
 				break;
 			case STORE:
-				// mt_gotoXY(23, 1);
-				// printf("Command %.2x\n", command);
-				// printf("Kek, you are stupid\n");
-				// accumulator = operand;
+				sc_memorySet(operand, accumulator);
+				accumulator = 0;
+				break;
+			case JUMP:
+				break;
+			case JNEG:
+				break;
+			case JZ:
+				break;
+			case HALT:
 				break;
 		}
 	}
@@ -54,38 +63,40 @@ int CU()
 
 int ALU(int command, int operand)
 {
+	int value;
+	sc_memoryGet(operand, &value);
 	switch (command)
 	{
 		case ADD:
-			if (accumulator + operand > 0x7FF){
+			if (accumulator + value > 0xFFFF){
 				sc_regSet(P, 1);
 				break;
 			}
-			accumulator += operand;
+			accumulator += value;
 			break;
 		case SUB:
-			if (accumulator - operand < 0) {
+			if (accumulator - value < -0xFFFE) {
 				sc_regSet(P, 1);
 				break;
 			}
-			accumulator -= operand;
+			accumulator -= value;
 			break;
 		case DIVIDE:
-			if (operand == 0) {
+			if (value == 0) {
 				sc_regSet(O, 1);
 				break;
-			} else if (accumulator / operand < 0) {
+			} else if (accumulator / value < 0) {
 				sc_regSet(P, 1);
 				break;
 			}
-			accumulator /= operand;
+			accumulator /= value;
 			break;
 		case MUL:
-			if (accumulator * operand > 0x7FF) {
+			if (accumulator * value > 0xFFFF) {
 				sc_regSet(P, 1);
 				break;
 			}
-			accumulator *= operand;
+			accumulator *= value;
 			break;
 	}
 	return 0;

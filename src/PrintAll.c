@@ -29,6 +29,30 @@ int pa_ProgRun()
 
 	pa_printAll(y, x, y_term, x_term);
 
+	#if 1
+	sc_memorySet(99, 100);
+	sc_memorySet(98, 2);
+
+	int value = 0;
+	value = (value | 0x20) << 7;
+	value |= 99;
+	sc_memorySet(0, value);
+
+	value = 0;
+	value = (value | 0x32) << 7;
+	value |= 98;
+	sc_memorySet(1, value);
+
+	value = 0;
+	value = (value | 0x21) << 7;
+	value |= 97;
+	sc_memorySet(2, value);
+
+	pa_printMemory();
+	mt_gotoXY(28, 1);
+	fflush(stdout);
+	#endif
+
 	while (key != key_q) {
 		rk_readkey(&key);
 
@@ -50,6 +74,10 @@ int pa_ProgRun()
 			case key_tt:
 				break;
 			case key_i:
+				pa_initPrintMemory();
+				sc_regInit();
+				accumulator = 0;
+				instructionCounter = 0;
 				break;
 			case key_f5:
 				break;
@@ -113,13 +141,18 @@ int pa_ProgRun()
 				break;
 		}
 
+		instructionCounter = y * 10 + x;
+
 		CU();
 
+		pa_printMemory();
+
 		pa_resetBGColor(y, x, y_term, x_term);
-		pa_printOperation(y, x);
-		pa_printCase(y, x);
-		pa_printFlags();
 		pa_printAccumulator();
+		pa_printInstructionCounter();
+		pa_printOperation(y, x);
+		pa_printFlags();
+		pa_printCase(y, x);
 
 		mt_gotoXY(28, 1);
 
@@ -132,8 +165,7 @@ int pa_ProgRun()
 int pa_setBGColor(int ind, int y, int x, int y_term, int x_term)
 {
 	if (ind == 1) {
-		enum colors a = cyan;
-		mt_ssetbgcolor(a);
+		mt_ssetbgcolor(cyan);
 		mt_gotoXY(y_term, x_term - 4);
 		printf("+%.4X", memory[y * 10 + x]);
 		mt_stopcolor();
@@ -160,7 +192,8 @@ int pa_printAll(int y, int x, int y_term, int x_term)
 {
 	mt_clrscr();
 
-	pa_initprintMemory();
+	pa_printBoxMemory();
+	pa_initPrintMemory();
 
 	pa_printBoxAccumulator();
 	pa_printAccumulator();
@@ -175,7 +208,8 @@ int pa_printAll(int y, int x, int y_term, int x_term)
 	pa_printFlags();
 
 	pa_printBoxCase();
-	pa_setBGColor(1, y, x, y_term, x_term);
+	pa_resetBGColor(y, x, y_term, x_term);
+	// pa_setBGColor(1, y, x, y_term, x_term);
 	pa_printCase(y, x);
 
 	pa_printKeys();
@@ -187,12 +221,10 @@ int pa_printAll(int y, int x, int y_term, int x_term)
 	return 0;
 }
 
-int pa_initprintMemory()
+int pa_initPrintMemory()
 {
 	sc_memoryInit();
-	pa_printBoxMemory();
 	pa_printMemory();
-
 	return 0;
 }
 
@@ -260,9 +292,19 @@ int pa_printBoxOperation()
 int pa_printOperation(int y, int x)
 {
 	int value;
+	int command;
+	int operand;
+
 	sc_memoryGet(y * 10 + x, &value);
+
 	mt_gotoXY(8, 69);
-	printf("+%.2x : %.2x", (value >> 7) & 0x7F, value & 0x7F);
+
+	if (sc_commandDecode(value, &command, &operand)) {
+		printf("+00 : 00");
+		return 1;
+	}
+
+	printf("+%.2x : %.2x", command, operand);
 	return 0;
 }
 
