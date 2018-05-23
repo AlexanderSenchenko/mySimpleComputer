@@ -27,7 +27,9 @@ int pa_ProgRun()
 
 	enum keys key;
 
-	pa_printAll(y, x, y_term, x_term);
+	pa_initComp();
+	pa_printAllBox(y, x, y_term, x_term);
+	pa_resetTerm(y, x, y_term, x_term);
 
 	#if 1
 	sc_memorySet(99, 100);
@@ -36,21 +38,30 @@ int pa_ProgRun()
 	int value = 0;
 	value = (value | 0x20) << 7;
 	value |= 99;
-	sc_memorySet(0, value);
+	sc_memorySet(1, value);
 
 	value = 0;
 	value = (value | 0x32) << 7;
 	value |= 98;
-	sc_memorySet(1, value);
+	sc_memorySet(2, value);
 
 	value = 0;
 	value = (value | 0x21) << 7;
-	value |= 97;
-	sc_memorySet(2, value);
+	value |= 96;
+	sc_memorySet(3, value);
 
-	pa_printMemory();
-	mt_gotoXY(28, 1);
-	fflush(stdout);
+	value = 0;
+	value = (value | 0x21) << 7;
+	value |= 96;
+	sc_memorySet(4, value);
+
+	pa_resetTerm(y, x, y_term, x_term);
+	#endif
+
+	#if 0
+	for () {
+
+	}
 	#endif
 
 	while (key != key_q) {
@@ -74,10 +85,7 @@ int pa_ProgRun()
 			case key_tt:
 				break;
 			case key_i:
-				pa_initPrintMemory();
-				sc_regInit();
-				accumulator = 0;
-				instructionCounter = 0;
+				pa_initComp();
 				break;
 			case key_f5:
 				break;
@@ -145,19 +153,56 @@ int pa_ProgRun()
 
 		CU();
 
-		pa_printMemory();
-
-		pa_resetBGColor(y, x, y_term, x_term);
-		pa_printAccumulator();
-		pa_printInstructionCounter();
-		pa_printOperation(y, x);
-		pa_printFlags();
-		pa_printCase(y, x);
-
-		mt_gotoXY(28, 1);
-
-		fflush(stdout);
+		pa_resetTerm(y, x, y_term, x_term);
 	}
+
+	return 0;
+}
+
+int pa_resetTerm(int y, int x, int y_term, int x_term)
+{
+	pa_printMemory();
+	pa_resetBGColor(y, x, y_term, x_term);
+	pa_printAccumulator();
+	pa_printInstructionCounter();
+	pa_printOperation(y, x);
+	pa_printFlags();
+	pa_printCase(y, x);
+
+	mt_gotoXY(28, 1);
+	fflush(stdout);
+	return 0;
+}
+
+int pa_initComp()
+{
+	sc_memoryInit();
+	sc_regInit();
+	accumulator = 0;
+	instructionCounter = 0;
+	return 0;
+}
+
+int pa_printAllBox(int y, int x, int y_term, int x_term)
+{
+	mt_clrscr();
+
+	pa_printBoxMemory();
+	pa_printBoxAccumulator();
+	pa_printBoxInstructionCounter();
+	pa_printBoxOperation();
+	pa_printBoxFlags();
+	pa_printBoxCase();
+	pa_printKeys();
+	return 0;
+}
+
+//////////////////////////////
+int pa_resetBGColor(int y, int x, int y_term, int x_term)
+{
+	pa_setBGColor(0, y, x, y_term, x_term);
+	pa_setBGColor(1, y, x, y_term, x_term);
+	fflush(stdout);
 
 	return 0;
 }
@@ -179,63 +224,6 @@ int pa_setBGColor(int ind, int y, int x, int y_term, int x_term)
 	return 0;
 }
 
-int pa_resetBGColor(int y, int x, int y_term, int x_term)
-{
-	pa_setBGColor(0, y, x, y_term, x_term);
-	pa_setBGColor(1, y, x, y_term, x_term);
-	fflush(stdout);
-
-	return 0;
-}
-
-int pa_printAll(int y, int x, int y_term, int x_term)
-{
-	mt_clrscr();
-
-	pa_printBoxMemory();
-	pa_initPrintMemory();
-
-	pa_printBoxAccumulator();
-	pa_printAccumulator();
-
-	pa_printBoxInstructionCounter();
-	pa_printInstructionCounter();
-
-	pa_printBoxOperation();
-	pa_printOperation(y, x);
-
-	pa_printBoxFlags();
-	pa_printFlags();
-
-	pa_printBoxCase();
-	pa_resetBGColor(y, x, y_term, x_term);
-	// pa_setBGColor(1, y, x, y_term, x_term);
-	pa_printCase(y, x);
-
-	pa_printKeys();
-
-	mt_gotoXY(28, 1);
-
-	fflush(stdout);
-
-	return 0;
-}
-
-int pa_initPrintMemory()
-{
-	sc_memoryInit();
-	pa_printMemory();
-	return 0;
-}
-
-int pa_printBoxMemory()
-{
-	bc_box(1, 1, BOX_ROW_MEMORY, BOX_COLUMN_MEMORY);
-	mt_gotoXY(1, 28);
-	printf(" Memory ");
-	return 0;
-}
-
 int pa_printMemory()
 {
 	for (int i = 0; i < 10; i++) {
@@ -251,14 +239,6 @@ int pa_printMemory()
 	return 0;
 }
 
-int pa_printBoxAccumulator()
-{
-	bc_box(1, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
-	mt_gotoXY(1, 67);
-	printf(" accumulator ");
-	return 0;
-}
-
 int pa_printAccumulator()
 {
 	mt_gotoXY(2, 70);
@@ -266,26 +246,10 @@ int pa_printAccumulator()
 	return 0;
 }
 
-int pa_printBoxInstructionCounter()
-{
-	bc_box(4, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
-	mt_gotoXY(4, 63);
-	printf(" instructionCounter ");
-	return 0;
-}
-
 int pa_printInstructionCounter()
 {
 	mt_gotoXY(5, 70);
 	printf("+%.4X", instructionCounter);
-	return 0;
-}
-
-int pa_printBoxOperation()
-{
-	bc_box(7, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
-	mt_gotoXY(7, 68);
-	printf(" Operation ");
 	return 0;
 }
 
@@ -308,14 +272,6 @@ int pa_printOperation(int y, int x)
 	return 0;
 }
 
-int pa_printBoxFlags()
-{
-	bc_box(10, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
-	mt_gotoXY(10, 69);
-	printf(" Flags ");
-	return 0;
-}
-
 int pa_printFlags()
 {
 	int value_p, value_o, value_m, value_t, value_e;
@@ -329,14 +285,6 @@ int pa_printFlags()
 	mt_gotoXY(11, 64);
 	printf("P-%d O-%d M-%d T-%d E-%d", value_p, value_o, value_m, value_t, value_e);
 
-	return 0;
-}
-
-int pa_printBoxCase()
-{
-	int column = 46;
-	int row = 10;
-	bc_box(BOX_ROW_MEMORY + 1, 1, row, column);
 	return 0;
 }
 
@@ -412,6 +360,55 @@ int pa_printCaseBigChar(int value, int coord_y)
 			bc_printbigchar(bcintF, BOX_ROW_MEMORY + 2, coord_y, purple, cyan);
 			break;
 	}
+	return 0;
+}
+
+//////////////////////////////
+int pa_printBoxMemory()
+{
+	bc_box(1, 1, BOX_ROW_MEMORY, BOX_COLUMN_MEMORY);
+	mt_gotoXY(1, 28);
+	printf(" Memory ");
+	return 0;
+}
+
+int pa_printBoxAccumulator()
+{
+	bc_box(1, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
+	mt_gotoXY(1, 67);
+	printf(" accumulator ");
+	return 0;
+}
+
+int pa_printBoxInstructionCounter()
+{
+	bc_box(4, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
+	mt_gotoXY(4, 63);
+	printf(" instructionCounter ");
+	return 0;
+}
+
+int pa_printBoxOperation()
+{
+	bc_box(7, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
+	mt_gotoXY(7, 68);
+	printf(" Operation ");
+	return 0;
+}
+
+int pa_printBoxFlags()
+{
+	bc_box(10, BOX_COLUMN_MEMORY + 1, MINI_BOX_ROW, MINI_BOX_COLUMN);
+	mt_gotoXY(10, 69);
+	printf(" Flags ");
+	return 0;
+}
+
+int pa_printBoxCase()
+{
+	int column = 46;
+	int row = 10;
+	bc_box(BOX_ROW_MEMORY + 1, 1, row, column);
 	return 0;
 }
 

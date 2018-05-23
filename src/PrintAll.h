@@ -15,23 +15,32 @@
 #define MINI_BOX_COLUMN 22
 
 int pa_ProgRun();
-int pa_setBGColor(int ind, int y, int x, int y_term, int x_term);
+
+int pa_resetTerm(int y, int x, int y_term, int x_term);
+
+int pa_initComp();
+
+int pa_printAllBox(int y, int x, int y_term, int x_term);
+
+///////////////////////
 int pa_resetBGColor(int y, int x, int y_term, int x_term);
-int pa_printAll(int y, int x, int y_term, int x_term);
-int pa_initPrintMemory();
-int pa_printBoxMemory();
+int pa_setBGColor(int ind, int y, int x, int y_term, int x_term);
+
 int pa_printMemory();
-int pa_printBoxAccumulator();
 int pa_printAccumulator();
-int pa_printBoxInstructionCounter();
 int pa_printInstructionCounter();
-int pa_printBoxOperation();
 int pa_printOperation(int y, int x);
-int pa_printBoxFlags();
 int pa_printFlags();
-int pa_printBoxCase();
 int pa_printCase(int y, int x);
 int pa_printCaseBigChar(int value, int coord_y);
+
+///////////////////////
+int pa_printBoxMemory();
+int pa_printBoxAccumulator();
+int pa_printBoxInstructionCounter();
+int pa_printBoxOperation();
+int pa_printBoxFlags();
+int pa_printBoxCase();
 int pa_printKeys();
 
 #endif
