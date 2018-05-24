@@ -69,6 +69,8 @@ int pa_ProgRun()
 				sc_memorySave("Test.bin");
 				break;
 			case key_r:
+				sc_regSet(T, 1);
+
 				x = 0;
 				y = 0;
 				x_term = 6;
@@ -90,9 +92,13 @@ int pa_ProgRun()
 					instructionCounter++;
 					sleep(1);
 				}
+
+				// sc_regSet(T, 0);
+
 				pa_resetTerm(y, x, y_term, x_term);
 				break;
 			case key_tt:
+				sc_regSet(T, 1);
 				CU();
 				pa_resetTerm(y, x, y_term, x_term);
 				if (x != 9) {
@@ -173,8 +179,6 @@ int pa_ProgRun()
 		}
 
 		instructionCounter = y * 10 + x;
-
-		// CU();
 
 		pa_resetTerm(y, x, y_term, x_term);
 	}
