@@ -18,7 +18,7 @@ int pa_ProgRun();
 
 int pa_resetTerm(int y, int x, int y_term, int x_term);
 
-int pa_initComp();
+int pa_initComp(int *y, int *x, int *y_term, int *x_term);
 
 int pa_printAllBox(int y, int x, int y_term, int x_term);
 

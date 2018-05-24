@@ -20,14 +20,12 @@ int bcintp [2] = {2115508224, 1579134};
 
 int pa_ProgRun()
 {
-	int x = 0;
-	int y = 0;
-	int x_term = 6;
-	int y_term = 2;
+	int x, y;
+	int x_term, y_term;
 
 	enum keys key;
 
-	pa_initComp();
+	pa_initComp(&y, &x, &y_term, &x_term);
 	pa_printAllBox(y, x, y_term, x_term);
 	pa_resetTerm(y, x, y_term, x_term);
 
@@ -110,7 +108,7 @@ int pa_ProgRun()
 				// sleep(1);
 				break;
 			case key_i:
-				pa_initComp();
+				pa_initComp(&y, &x, &y_term, &x_term);
 				break;
 			case key_f5:
 				break;
@@ -178,7 +176,7 @@ int pa_ProgRun()
 
 		// CU();
 
-		// pa_resetTerm(y, x, y_term, x_term);
+		pa_resetTerm(y, x, y_term, x_term);
 	}
 
 	return 0;
@@ -199,8 +197,13 @@ int pa_resetTerm(int y, int x, int y_term, int x_term)
 	return 0;
 }
 
-int pa_initComp()
+int pa_initComp(int *y, int *x, int *y_term, int *x_term)
 {
+	*x = 0;
+	*y = 0;
+	*x_term = 6;
+	*y_term = 2;
+	
 	sc_memoryInit();
 	sc_regInit();
 	accumulator = 0;
