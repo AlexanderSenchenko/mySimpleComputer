@@ -32,15 +32,10 @@ int CU()
 		printf("___________________\n");
 		printf("___________________\n");
 		#endif
+
 		switch (command)
 		{
 			case LOAD:
-				// mt_gotoXY(23, 1);
-				// printf("Command %.2x\n", command);
-				// printf("Kek, you are stupid\n");
-
-				// accumulator = operand;
-
 				sc_memoryGet(operand, &accumulator);
 				break;
 			case STORE:
@@ -48,15 +43,17 @@ int CU()
 				accumulator = 0;
 				break;
 			case JUMP:
+				 instructionCounter = operand - 1;
 				break;
 			case JNEG:
+
 				break;
 			case JZ:
 				break;
 			case HALT:
 				mt_gotoXY(23, 1);
 				printf("End\n");
-				sc_regSet(T,0);
+				sc_regSet(T, 0);
 				return 1;
 				break;
 		}

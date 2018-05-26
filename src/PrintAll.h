@@ -14,12 +14,13 @@
 #define MINI_BOX_ROW 3
 #define MINI_BOX_COLUMN 22
 
+int x;
+int y;
+
 int pa_ProgRun();
 
 int pa_resetTerm(int y, int x, int y_term, int x_term);
-
 int pa_initComp(int *y, int *x, int *y_term, int *x_term);
-
 int pa_printAllBox(int y, int x, int y_term, int x_term);
 
 ///////////////////////
