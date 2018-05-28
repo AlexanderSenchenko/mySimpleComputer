@@ -21,15 +21,14 @@ int bcintp [2] = {2115508224, 1579134};
 int pa_ProgRun()
 {
 	int x, y;
-	int x_term, y_term;
 	// int x_term = 6 + 6 * x;
 	// int y_term = y + 2;
 
 	enum keys key;
 
-	pa_initComp(&y, &x, &y_term, &x_term);
-	pa_printAllBox(y, x, y_term, x_term);
-	pa_resetTerm(y, x, y_term, x_term);
+	pa_initComp();
+	pa_printAllBox();
+	pa_resetTerm();
 
 	#if 1
 	sc_memorySet(99, 100);
@@ -49,6 +48,7 @@ int pa_ProgRun()
 	#endif
 
 	#if 0
+	// Test JUMP
 	value = 0;
 	value = (value | 0x40) << 7;
 	value |= 3;
@@ -64,13 +64,12 @@ int pa_ProgRun()
 	value = (value | 0x43) << 7;
 	sc_memorySet(3, value);
 
-	pa_resetTerm(y, x, y_term, x_term);
+	pa_resetTerm();
 	#endif
 
+	#if 1
 	while (key != key_q) {
 		rk_readkey(&key);
-
-		int value;
 
 		switch (key)
 		{
@@ -83,23 +82,17 @@ int pa_ProgRun()
 			case key_r:
 				sc_regSet(T, 1);
 
-				x = 0;
-				y = 0;
-				x_term = 6;
-				y_term = 2;
+				instructionCounter = 0;
 				
-				instructionCounter = y * 10 + x;
+				pa_getXY(&x, &y);
 				
 				while (!CU()) {
-					pa_resetTerm(y, x, y_term, x_term);
+					pa_resetTerm();
 					if (x != 9) {
 						x++;
-						x_term += 6;
 					} else if (x == 9 && y != 9) {
 						x = 0;
-						x_term = 6;
 						y++;
-						y_term++;
 					}
 					instructionCounter++;
 
@@ -108,93 +101,50 @@ int pa_ProgRun()
 
 				// sc_regSet(T, 0);
 
-				pa_resetTerm(y, x, y_term, x_term);
+				pa_resetTerm();
 				break;
 			case key_tt:
 				sc_regSet(T, 1);
 				CU();
-				pa_resetTerm(y, x, y_term, x_term);
+				pa_resetTerm();
 				if (x != 9) {
 					x++;
-					x_term += 6;		
 				} else if (x == 9 && y != 9) {
 					x = 0;
-					x_term = 6;
 					y++;
-					y_term++;
 				}
 				instructionCounter++;
 				// sleep(1);
 				break;
 			case key_i:
-				pa_initComp(&y, &x, &y_term, &x_term);
-				pa_resetTerm(y, x, y_term, x_term);
+				pa_initComp();
+				pa_resetTerm();
 				break;
 			case key_f5:
 				break;
 			case key_f6:
 				break;
 			case key_up:
-				if (y != 0) {
-					pa_setBGColor(0, y, x, y_term, x_term);
-					y--;
-					y_term--;
-					pa_setBGColor(1, y, x, y_term, x_term);
-				}
-				
-				instructionCounter = y * 10 + x;
-				pa_resetTerm(y, x, y_term, x_term);
+				pa_moveUp();
 				break;
 			case key_down:
-				if (y != 9) {
-					pa_setBGColor(0, y, x, y_term, x_term);
-					y++;
-					y_term++;
-					pa_setBGColor(1, y, x, y_term, x_term);
-				}
-				
-				instructionCounter = y * 10 + x;
-				pa_resetTerm(y, x, y_term, x_term);
+				pa_moveDown();
 				break;
 			case key_right:
-				pa_setBGColor(0, y, x, y_term, x_term);
-				if (x != 9) {
-					x++;
-					x_term += 6;		
-				} else if (x == 9 && y != 9) {
-					x = 0;
-					x_term = 6;
-					y++;
-					y_term++;
-				}
-				pa_setBGColor(1, y, x, y_term, x_term);
-				
-				instructionCounter = y * 10 + x;
-				pa_resetTerm(y, x, y_term, x_term);
+				pa_moveRight();
 				break;
 			case key_left:
-				pa_setBGColor(0, y, x, y_term, x_term);
-				if (x != 0) {
-					x--;
-					x_term -= 6;
-				} else if (x == 0 && y != 0) {
-					x = 9;
-					x_term = 60;
-					y--;
-					y_term--;
-				}
-				pa_setBGColor(1, y, x, y_term, x_term);
-				
-				instructionCounter = y * 10 + x;
-				pa_resetTerm(y, x, y_term, x_term);
+				pa_moveLeft();
 				break;
-			case key_f:
-				value = 0;
-				sc_memoryGet(y * 10 + x, &value);
-				if (sc_memorySet(y * 10 + x, 100 + value) == 1)
-					sc_regSet(P, 1);
-				break;
+			// case key_f:
+			// 	value = 0;
+			// 	sc_memoryGet(y * 10 + x, &value);
+			// 	if (sc_memorySet(y * 10 + x, 100 + value) == 1)
+			// 		sc_regSet(P, 1);
+			// 	break;
 			default:
+				pa_getXY(&x, &y);
+				
 				if (key >= 0 && key <= 9) {
 					int value;
 					sc_memoryGet(y * 10 + x, &value);
@@ -202,28 +152,25 @@ int pa_ProgRun()
 						sc_regSet(P, 1);
 					
 					instructionCounter = y * 10 + x;
-					pa_resetTerm(y, x, y_term, x_term);
+					pa_resetTerm();
 				}
 				break;
 		}
-
-		// instructionCounter = y * 10 + x;
-
-		// pa_resetTerm(y, x, y_term, x_term);
 	}
+	#endif
 
 	return 0;
 }
 
-int pa_resetTerm(int y, int x, int y_term, int x_term)
+int pa_resetTerm()
 {
 	pa_printMemory();
-	pa_resetBGColor(y, x, y_term, x_term);
+	pa_resetBGColor();
 	pa_printAccumulator();
 	pa_printInstructionCounter();
-	pa_printOperation(y, x);
+	pa_printOperation();
 	pa_printFlags();
-	pa_printCase(y, x);
+	pa_printCase();
 
 	#if 1
 	mt_gotoXY(23, 1);
@@ -237,14 +184,15 @@ int pa_resetTerm(int y, int x, int y_term, int x_term)
 	printf("__________________________________\n");
 	#endif
 
+	int x, y;
+	pa_getXY(&x, &y);
+
 	#if 1
 	mt_gotoXY(24, 1);
 	printf("y = %d\n", y);
 	printf("x = %d\n", x);
-	printf("y_term(conv) = %d\n", y + 2);
-	// printf("y_term = %d\n", y_term);
-	printf("x_term(conv) = %d\n", 6 * (1 + x));
-	// printf("x_term = %d\n", x_term);
+	// printf("y_term(conv) = %d\n", y + 2);
+	// printf("x_term(conv) = %d\n", 6 * (1 + x));
 	printf("instrCount = %d\n", y * 10 + x);
 	#endif
 
@@ -253,13 +201,8 @@ int pa_resetTerm(int y, int x, int y_term, int x_term)
 	return 0;
 }
 
-int pa_initComp(int *y, int *x, int *y_term, int *x_term)
+int pa_initComp()
 {
-	*x = 0;
-	*y = 0;
-	*x_term = 6;
-	*y_term = 2;
-	
 	sc_memoryInit();
 	sc_regInit();
 	accumulator = 0;
@@ -267,7 +210,7 @@ int pa_initComp(int *y, int *x, int *y_term, int *x_term)
 	return 0;
 }
 
-int pa_printAllBox(int y, int x, int y_term, int x_term)
+int pa_printAllBox()
 {
 	mt_clrscr();
 
@@ -281,18 +224,98 @@ int pa_printAllBox(int y, int x, int y_term, int x_term)
 	return 0;
 }
 
-//////////////////////////////
-int pa_resetBGColor(int y, int x, int y_term, int x_term)
+void pa_getXY(int *x, int *y)
 {
-	pa_setBGColor(0, y, x, y_term, x_term);
-	pa_setBGColor(1, y, x, y_term, x_term);
+	int tmpY = 0;
+	int tmpX = instructionCounter;
+	while (tmpX >= 10) {
+		tmpX -= 10;
+		tmpY++;
+	}
+	*y = tmpY;
+	*x = tmpX;
+}
+
+void pa_moveUp()
+{
+	int x, y;
+	pa_getXY(&x, &y);
+
+	if (y != 0) {
+		pa_setBGColor(0);
+		y--;
+		pa_setBGColor(1);
+	}
+	
+	instructionCounter = y * 10 + x;
+	pa_resetTerm();
+}
+
+void pa_moveDown()
+{
+	int x, y;
+	pa_getXY(&x, &y);
+				
+	if (y != 9) {
+		pa_setBGColor(0);
+		y++;
+		pa_setBGColor(1);
+	}
+	
+	instructionCounter = y * 10 + x;
+	pa_resetTerm();
+}
+
+void pa_moveRight()
+{
+	int x, y;
+	pa_getXY(&x, &y);
+
+	pa_setBGColor(0);
+	if (x != 9) {
+		x++;
+	} else if (x == 9 && y != 9) {
+		x = 0;
+		y++;
+	}
+	pa_setBGColor(1);
+	
+	instructionCounter = y * 10 + x;
+	pa_resetTerm();
+}
+
+void pa_moveLeft()
+{
+	int x, y;
+	pa_getXY(&x, &y);
+
+	pa_setBGColor(0);
+	if (x != 0) {
+		x--;
+	} else if (x == 0 && y != 0) {
+		x = 9;
+		y--;
+	}
+	pa_setBGColor(1);
+	
+	instructionCounter = y * 10 + x;
+	pa_resetTerm();
+}
+
+//////////////////////////////
+int pa_resetBGColor()
+{
+	pa_setBGColor(0);
+	pa_setBGColor(1);
 	fflush(stdout);
 
 	return 0;
 }
 
-int pa_setBGColor(int ind, int y, int x, int y_term, int x_term)
+int pa_setBGColor(int ind)
 {
+	int x, y;
+	pa_getXY(&x, &y);
 	if (ind == 1) {
 		mt_ssetbgcolor(cyan);
 		mt_gotoXY(y + 2, (6 + 6 * x) - 4);
@@ -300,7 +323,7 @@ int pa_setBGColor(int ind, int y, int x, int y_term, int x_term)
 		mt_stopcolor();
 	} else if (ind == 0) {
 		mt_stopcolor();
-		mt_gotoXY(y_term, x_term - 4);
+		mt_gotoXY(y + 2, (6 + 6 * x) - 4);
 		printf("+%.4X", memory[instructionCounter]);
 	} else {
 		return 1;
@@ -337,11 +360,14 @@ int pa_printInstructionCounter()
 	return 0;
 }
 
-int pa_printOperation(int y, int x)
+int pa_printOperation()
 {
 	int value;
 	int command;
 	int operand;
+	int x, y;
+
+	pa_getXY(&x, &y);
 
 	sc_memoryGet(y * 10 + x, &value);
 
@@ -372,12 +398,16 @@ int pa_printFlags()
 	return 0;
 }
 
-int pa_printCase(int y, int x)
+int pa_printCase()
 {
 	bc_printbigchar(bcintp, BOX_ROW_MEMORY + 2, 2, purple, cyan);
 	
 	int value;
 	int rank[4];
+	int x, y;
+	
+	pa_getXY(&x, &y);
+	
 	sc_memoryGet(y * 10 + x, &value);
 
 	for (int i = 0; i < 4; ++i) {
@@ -385,9 +415,8 @@ int pa_printCase(int y, int x)
 		value /= 16;
 	}
 
-	for (int i = 38, j = 0; i >= 11; i -= 9, j++) {
+	for (int i = 38, j = 0; i >= 11; i -= 9, j++)
 		pa_printCaseBigChar(rank[j], i);
-	}
 
 	return 0;
 }

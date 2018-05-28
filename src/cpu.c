@@ -51,8 +51,8 @@ int CU()
 			case JZ:
 				break;
 			case HALT:
-				mt_gotoXY(23, 1);
-				printf("End\n");
+				// mt_gotoXY(23, 1);
+				// printf("End\n");
 				sc_regSet(T, 0);
 				return 1;
 				break;
