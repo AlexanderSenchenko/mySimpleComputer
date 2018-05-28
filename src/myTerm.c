@@ -25,6 +25,12 @@ int mt_getscreensize(int *rows, int *cols)
 	return 0;
 }
 
+int mt_setscreensize(int rows, int cols)
+{
+	printf("\E[8;%d;%d;t", cols, rows);
+	return 0;
+}
+
 int mt_ssetfgcolor(enum colors color)
 {
 	printf("\E[3%dm", color);

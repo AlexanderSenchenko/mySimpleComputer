@@ -141,6 +141,7 @@ int pa_resetTerm()
 
 	#if 1
 	int x, y;
+
 	pa_getXY(&x, &y);
 
 	mt_gotoXY(24, 1);
@@ -168,6 +169,8 @@ int pa_initComp()
 
 int pa_printAllBox()
 {
+	mt_setscreensize(83, 47);
+
 	mt_clrscr();
 
 	pa_printBoxMemory();

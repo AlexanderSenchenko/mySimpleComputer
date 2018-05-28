@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
+// #include <termios.h>
 #include <sys/ioctl.h>
 
 enum colors {
@@ -20,6 +21,7 @@ enum colors {
 int mt_clrscr();
 int mt_gotoXY(int y, int x);
 int mt_getscreensize(int *rows, int *cols);
+int mt_setscreensize(int rows, int cols);
 int mt_ssetfgcolor(enum colors color);
 int mt_ssetbgcolor(enum colors color);
 int mt_stopcolor();
