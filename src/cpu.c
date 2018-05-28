@@ -47,7 +47,7 @@ int CU()
 				accumulator = 0;
 				break;
 			case JUMP:
-				 instructionCounter = operand;
+				 instructionCounter = operand - 1;
 				break;
 			case JNEG:
 				break;

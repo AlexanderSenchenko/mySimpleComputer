@@ -49,6 +49,10 @@ int pa_ProgRun()
 	value = (value | 0x40) << 7;
 	value |= 12;
 	sc_memorySet(1, value);
+
+	value = 0;
+	value = (value | 0x43) << 7;
+	sc_memorySet(13, value);
 	#endif
 
 	value = 0;
@@ -139,7 +143,7 @@ int pa_resetTerm()
 	printf("__________________________________\n");
 	#endif
 
-	#if 1
+	#if 0
 	int x, y;
 
 	pa_getXY(&x, &y);
@@ -149,8 +153,9 @@ int pa_resetTerm()
 	printf("x = %d\n", x);
 	// printf("y_term(conv) = %d\n", y + 2);
 	// printf("x_term(conv) = %d\n", 6 * (1 + x));
-	printf("instrCount = %d\n", instructionCounter);
-	printf("instrCount(conv) = %d\n", y * 10 + x);
+	// printf("instrCount = %d\n", instructionCounter);
+	// printf("instrCount(conv) = %d\n", y * 10 + x);
+	// printf("Size memory = %d\n", SIZE);
 	#endif
 
 	mt_gotoXY(31, 1);
@@ -220,15 +225,12 @@ void pa_keyRun()
 	
 	while (!CU()) {
 		pa_resetTerm();
-		if (x != 9) {
-			x++;
-		} else if (x == 9 && y != 9) {
-			x = 0;
-			y++;
-		}
-		instructionCounter++;
+
+		if ((instructionCounter + 1) < SIZE) 
+			instructionCounter++;
 
 		sleep(1);	// "Signal"
+		pa_resetTerm();
 	}
 
 	// sc_regSet(T, 0);
@@ -246,14 +248,12 @@ void pa_keyStep()
 
 	CU();
 	pa_resetTerm();
-	if (x != 9) {
-		x++;
-	} else if (x == 9 && y != 9) {
-		x = 0;
-		y++;
-	}
-	instructionCounter++;
+
+	if ((instructionCounter + 1) < SIZE) 
+			instructionCounter++;
+	
 	// sleep(1);
+	pa_resetTerm();
 }
 
 void pa_keyReset()
@@ -379,12 +379,10 @@ int pa_printMemory()
 	for (int i = 0; i < 10; i++) {
 		mt_gotoXY(2 + i, 2);
 		for (int j = 0; j < 10; j++) {
-			if (j != 0) {
+			if (j != 0)
 				printf(" ");
-			}
 			printf("+%.4X", memory[i * 10 + j]);
 		}
-		// printf("\n");
 	}
 	return 0;
 }
