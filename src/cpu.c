@@ -35,6 +35,10 @@ int CU()
 
 		switch (command)
 		{
+			case READ:
+				break;
+			case WRITE:
+				break;
 			case LOAD:
 				sc_memoryGet(operand, &accumulator);
 				break;
@@ -43,16 +47,13 @@ int CU()
 				accumulator = 0;
 				break;
 			case JUMP:
-				 instructionCounter = operand - 1;
+				 instructionCounter = operand;
 				break;
 			case JNEG:
-
 				break;
 			case JZ:
 				break;
 			case HALT:
-				// mt_gotoXY(23, 1);
-				// printf("End\n");
 				sc_regSet(T, 0);
 				return 1;
 				break;

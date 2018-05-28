@@ -20,10 +20,6 @@ int bcintp [2] = {2115508224, 1579134};
 
 int pa_ProgRun()
 {
-	int x, y;
-	// int x_term = 6 + 6 * x;
-	// int y_term = y + 2;
-
 	enum keys key;
 
 	pa_initComp();
@@ -39,7 +35,7 @@ int pa_ProgRun()
 	value |= 99;
 	sc_memorySet(0, value);
 
-	#if 1
+	#if 0
 	// Test DIVIDE
 	value = 0;
 	value = (value | 0x32) << 7;
@@ -47,11 +43,11 @@ int pa_ProgRun()
 	sc_memorySet(1, value);
 	#endif
 
-	#if 0
+	#if 1
 	// Test JUMP
 	value = 0;
 	value = (value | 0x40) << 7;
-	value |= 3;
+	value |= 12;
 	sc_memorySet(1, value);
 	#endif
 
@@ -74,51 +70,19 @@ int pa_ProgRun()
 		switch (key)
 		{
 			case key_l:
-				sc_memoryLoad("Test.bin");
+				pa_keyLoad();
 				break;
 			case key_s:
-				sc_memorySave("Test.bin");
+				pa_keySave();
 				break;
 			case key_r:
-				sc_regSet(T, 1);
-
-				instructionCounter = 0;
-				
-				pa_getXY(&x, &y);
-				
-				while (!CU()) {
-					pa_resetTerm();
-					if (x != 9) {
-						x++;
-					} else if (x == 9 && y != 9) {
-						x = 0;
-						y++;
-					}
-					instructionCounter++;
-
-					sleep(1);	// "Signal"
-				}
-
-				// sc_regSet(T, 0);
-
-				pa_resetTerm();
+				pa_keyRun();
 				break;
 			case key_tt:
-				sc_regSet(T, 1);
-				CU();
-				pa_resetTerm();
-				if (x != 9) {
-					x++;
-				} else if (x == 9 && y != 9) {
-					x = 0;
-					y++;
-				}
-				instructionCounter++;
-				// sleep(1);
+				pa_keyStep();
 				break;
 			case key_i:
-				pa_initComp();
-				pa_resetTerm();
+				pa_keyReset();
 				break;
 			case key_f5:
 				break;
@@ -143,17 +107,7 @@ int pa_ProgRun()
 			// 		sc_regSet(P, 1);
 			// 	break;
 			default:
-				pa_getXY(&x, &y);
-				
-				if (key >= 0 && key <= 9) {
-					int value;
-					sc_memoryGet(y * 10 + x, &value);
-					if (sc_memorySet(y * 10 + x, key + value) == 1)
-						sc_regSet(P, 1);
-					
-					instructionCounter = y * 10 + x;
-					pa_resetTerm();
-				}
+				pa_keyNumber(key);
 				break;
 		}
 	}
@@ -162,6 +116,7 @@ int pa_ProgRun()
 	return 0;
 }
 
+//////////////////////////////
 int pa_resetTerm()
 {
 	pa_printMemory();
@@ -184,16 +139,17 @@ int pa_resetTerm()
 	printf("__________________________________\n");
 	#endif
 
+	#if 1
 	int x, y;
 	pa_getXY(&x, &y);
 
-	#if 1
 	mt_gotoXY(24, 1);
 	printf("y = %d\n", y);
 	printf("x = %d\n", x);
 	// printf("y_term(conv) = %d\n", y + 2);
 	// printf("x_term(conv) = %d\n", 6 * (1 + x));
-	printf("instrCount = %d\n", y * 10 + x);
+	printf("instrCount = %d\n", instructionCounter);
+	printf("instrCount(conv) = %d\n", y * 10 + x);
 	#endif
 
 	mt_gotoXY(31, 1);
@@ -224,6 +180,7 @@ int pa_printAllBox()
 	return 0;
 }
 
+//////////////////////////////
 void pa_getXY(int *x, int *y)
 {
 	int tmpY = 0;
@@ -236,6 +193,89 @@ void pa_getXY(int *x, int *y)
 	*x = tmpX;
 }
 
+//////////////////////////////
+void pa_keyLoad()
+{
+	sc_memoryLoad("Test.bin");
+	pa_resetTerm();
+}
+
+void pa_keySave()
+{
+	sc_memorySave("Test.bin");
+}
+
+void pa_keyRun()
+{
+	int x, y;
+
+	sc_regSet(T, 1);
+
+	instructionCounter = 0;
+	
+	pa_getXY(&x, &y);
+	
+	while (!CU()) {
+		pa_resetTerm();
+		if (x != 9) {
+			x++;
+		} else if (x == 9 && y != 9) {
+			x = 0;
+			y++;
+		}
+		instructionCounter++;
+
+		sleep(1);	// "Signal"
+	}
+
+	// sc_regSet(T, 0);
+
+	pa_resetTerm();
+}
+
+void pa_keyStep()
+{
+	int x, y;
+
+	sc_regSet(T, 1);
+
+	pa_getXY(&x, &y);
+
+	CU();
+	pa_resetTerm();
+	if (x != 9) {
+		x++;
+	} else if (x == 9 && y != 9) {
+		x = 0;
+		y++;
+	}
+	instructionCounter++;
+	// sleep(1);
+}
+
+void pa_keyReset()
+{
+	pa_initComp();
+	pa_resetTerm();
+}
+
+void pa_keyNumber(enum keys key)
+{
+	int x, y;
+	pa_getXY(&x, &y);
+				
+	if (key >= 0 && key <= 9) {
+		int value;
+		sc_memoryGet(y * 10 + x, &value);
+		if (sc_memorySet(y * 10 + x, key + value) == 1)
+			sc_regSet(P, 1);
+		
+		instructionCounter = y * 10 + x;
+		pa_resetTerm();
+	}
+}
+
+//////////////////////////////
 void pa_moveUp()
 {
 	int x, y;
@@ -341,7 +381,7 @@ int pa_printMemory()
 			}
 			printf("+%.4X", memory[i * 10 + j]);
 		}
-		printf("\n");
+		// printf("\n");
 	}
 	return 0;
 }
@@ -378,7 +418,7 @@ int pa_printOperation()
 		return 1;
 	}
 
-	printf("+%.2x : %.2x", command, operand);
+	printf("+%.2X : %.2X", command, operand);
 	return 0;
 }
 
