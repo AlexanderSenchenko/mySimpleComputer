@@ -143,7 +143,7 @@ int pa_resetTerm()
 	printf("__________________________________\n");
 	#endif
 
-	#if 0
+	#if 1
 	int x, y;
 
 	pa_getXY(&x, &y);
@@ -153,8 +153,8 @@ int pa_resetTerm()
 	printf("x = %d\n", x);
 	// printf("y_term(conv) = %d\n", y + 2);
 	// printf("x_term(conv) = %d\n", 6 * (1 + x));
-	// printf("instrCount = %d\n", instructionCounter);
-	// printf("instrCount(conv) = %d\n", y * 10 + x);
+	printf("instrCount = %d\n", instructionCounter);
+	printf("instrCount(conv) = %d\n", y * 10 + x);
 	// printf("Size memory = %d\n", SIZE);
 	#endif
 
@@ -191,14 +191,8 @@ int pa_printAllBox()
 //////////////////////////////
 void pa_getXY(int *x, int *y)
 {
-	int tmpY = 0;
-	int tmpX = instructionCounter;
-	while (tmpX >= 10) {
-		tmpX -= 10;
-		tmpY++;
-	}
-	*y = tmpY;
-	*x = tmpX;
+	*x = instructionCounter % 10;
+	*y = instructionCounter / 10;
 }
 
 //////////////////////////////
