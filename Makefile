@@ -1,60 +1,61 @@
-BIN_NAME = main
+BIN_NAME := main
 
-SRC_PATH = src
-BUILD_PATH = build
-BIN_PATH = bin
-LIB_PATH = lib
-# INCLUDE_PATH_FLAGS =
-LIB_FLAG = -L
+SRC_PATH := src
+INCLUDE_PATH := $(SRC_PATH)/include
+BUILD_PATH := build
+BIN_PATH := bin
+LIB_PATH := lib
 
-SRC_EXT = c
+SRC_EXT := c
 
-CC = gcc
+CC := gcc
 
-COMPILE_FLAGS = -std=c99 -Wall -Werror -O0 -g
+COMPILE_FLAGS := -std=c99 -Wall -Werror -O0 -g
 
-SOURCES = $(shell find $(SRC_PATH)/ -name '*.$(SRC_EXT)')
+SRC_FILE := $(wildcard $(SRC_PATH)/*.c)
 
-OBJECTS = $(SOURCES:$(SRC_PATH)/%.$(SRC_EXT)=$(BUILD_PATH)/%.o)
+# LIB := $(patsubst %.$(SRC_EXT), %.a, $(SRC_FILE))
+# LIB := $(notdir $(LIB))
+# LIB := $(addprefix $(LIB_PATH)/lib, $(LIB))
 
-LIB_SOURCES = $(filter-out $(SRC_PATH)/main.c, $(SOURCES))
+OBJECTS := $(patsubst %.$(SRC_EXT), %.o, $(SRC_FILE))
+OBJECTS := $(notdir $(OBJECTS))
+OBJECTS := $(addprefix $(BUILD_PATH)/, $(OBJECTS))
 
-LIBS = $(LIB_SOURCES:$(SRC_PATH)/%.$(SRC_EXT)=$(LIB_PATH)/lib%.a)
+.PHONY: all
+all: dirs $(BIN_NAME)
 
-LLIBS = $(filter-out -lhelper, $(LIBS:$(LIB_PATH)/lib%.a=-l%))
+$(BIN_NAME): $(OBJECTS)
+	$(CC) $(COMPILE_FLAGS) $^ -o $(BIN_PATH)/$@
 
-all: makedirs main
-	
-main: $(BUILD_PATH)/main.o $(LIBS)
-	$(CC) $(COMPILE_FLAGS) $(LIB_FLAG)$(LIB_PATH) $(BUILD_PATH)/main.o -o $(BIN_PATH)/$(BIN_NAME) $(LLIBS)
+# .PHONY: testLib
+# testLib: $(LIB)
+# 	@echo $(LIB)
+# 	@echo $(notdir $(LIB))
+# 	@echo $(patsubst %.a, %, $(notdir $(LIB)))
+# 	@echo $(addprefix -l, $(patsubst %.a, %, $(notdir $(LIB))))
 
-$(BUILD_PATH)/main.o: $(SRC_PATH)/main.$(SRC_EXT)
-	$(CC) $(COMPILE_FLAGS) $(INCLUDE_PATH_FLAGS) $< -c -o $@
+# $(LIB_PATH)/lib%.a:
+# 	@echo $@
 
-$(LIB_PATH)/lib%.a : $(BUILD_PATH)/%.o
-	ar rcs $@ $^
-
+VPATH := $(INCLUDE_PATH)
 $(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
-	$(CC) $(COMPILE_FLAGS) $(INCLUDE_PATH_FLAGS) $< -c -o $@
+	$(CC) -MD $(COMPILE_FLAGS) $(addprefix -I, $(INCLUDE_PATH)) -c $< -o $@
 
-makedirs:
+include $(wildcard *.d)
+
+.PHONY: dirs
+dirs:
 	@mkdir $(BIN_PATH) -p
 	@mkdir $(BUILD_PATH) -p
 	@mkdir $(LIB_PATH) -p
 
-.PHONY:
+.PHONY: run
+run:
+	./$(BIN_PATH)/$(BIN_NAME)
 
+.PHONY: clean
 clean:
-	$(shell printf '\043 Cleaned \043')
 	@rm -rf $(BIN_PATH)
 	@rm -rf $(BUILD_PATH)
 	@rm -rf $(LIB_PATH)
-
-run:
-	@clear
-	@bin/main
-
-tog:
-	@make clean
-	@make
-	@make run

@@ -7,6 +7,7 @@
 #include "myBigChars.h"
 #include "myReadkey.h"
 #include "cpu.h"
+#include "asm.h"
 
 #define BOX_ROW_MEMORY 12
 #define BOX_COLUMN_MEMORY 61

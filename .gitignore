@@ -1,4 +1,5 @@
 bin/
-build/*.o
+build/*
 lib/*.a
 *.bin
+*.o

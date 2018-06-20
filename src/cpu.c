@@ -47,7 +47,12 @@ int CU()
 				accumulator = 0;
 				break;
 			case JUMP:
-				 instructionCounter = operand - 1;
+				if (operand >= SIZE || operand < 0) {
+					sc_regSet(M, 1);
+					break;
+				}
+
+				instructionCounter = operand;
 				break;
 			case JNEG:
 				break;
@@ -59,7 +64,7 @@ int CU()
 				break;
 		}
 	}
-
+	
 	return 0;
 }
 

@@ -21,12 +21,17 @@ int bcintp [2] = {2115508224, 1579134};
 int pa_ProgRun()
 {
 	enum keys key;
+	// int reg_p;
+	// int reg_o;
+	// int reg_m;
+	int reg_t;
+	// int reg_e;
 
 	pa_initComp();
 	pa_printAllBox();
 	pa_resetTerm();
 
-	#if 1
+	#if 0
 	sc_memorySet(99, 100);
 	sc_memorySet(98, 2);
 
@@ -64,12 +69,22 @@ int pa_ProgRun()
 	value = (value | 0x43) << 7;
 	sc_memorySet(3, value);
 
+	#if 0
+	// Test
+	value = 0;
+	value = (value | 0x10) << 7;
+	value |= 99;
+	sc_memorySet(10, value);
+	#endif
+
 	pa_resetTerm();
 	#endif
 
 	#if 1
 	while (key != key_q) {
-		rk_readkey(&key);
+		sc_regGet(T, &reg_t);
+		// if (!reg_t)
+			rk_readkey(&key);
 
 		switch (key)
 		{
@@ -216,7 +231,7 @@ void pa_keyRun()
 	instructionCounter = 0;
 	
 	pa_getXY(&x, &y);
-	
+
 	while (!CU()) {
 		pa_resetTerm();
 
@@ -224,7 +239,7 @@ void pa_keyRun()
 			instructionCounter++;
 
 		sleep(1);	// "Signal"
-		pa_resetTerm();
+		// pa_resetTerm();
 	}
 
 	// sc_regSet(T, 0);
@@ -419,16 +434,16 @@ int pa_printOperation()
 
 int pa_printFlags()
 {
-	int value_p, value_o, value_m, value_t, value_e;
+	int reg_p, reg_o, reg_m, reg_t, reg_e;
 
-	sc_regGet(P, &value_p);
-	sc_regGet(O, &value_o);
-	sc_regGet(M, &value_m);
-	sc_regGet(T, &value_t);
-	sc_regGet(E, &value_e);
+	sc_regGet(P, &reg_p);
+	sc_regGet(O, &reg_o);
+	sc_regGet(M, &reg_m);
+	sc_regGet(T, &reg_t);
+	sc_regGet(E, &reg_e);
 
 	mt_gotoXY(11, 64);
-	printf("P-%d O-%d M-%d T-%d E-%d", value_p, value_o, value_m, value_t, value_e);
+	printf("P-%d O-%d M-%d T-%d E-%d", reg_p, reg_o, reg_m, reg_t, reg_e);
 
 	return 0;
 }
