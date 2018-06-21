@@ -150,19 +150,16 @@ int pa_resetTerm()
 	printf("Input\\Output:");
 
 	#if 1
-	// 23-24 для input
 	mt_gotoXY(25, 1);
-	printf("__________________________________\n");
-	printf("__________________________________\n");
-	printf("__________________________________\n");
-	printf("__________________________________\n");
-	printf("__________________________________\n");
-	printf("__________________________________\n");
-	printf("__________________________________\n");
-	printf("__________________________________\n");
+	for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 83; i++) {
+			printf("_");
+		}
+		printf("\n");
+	}
 	#endif
 
-	#if 1
+	#if 0
 	int x, y;
 
 	pa_getXY(&x, &y);
@@ -217,13 +214,39 @@ void pa_getXY(int *x, int *y)
 //////////////////////////////
 void pa_keyLoad()
 {
-	sc_memoryLoad("Test.bin");
+	char *file = malloc(sizeof(char) * 35);
+
+	mt_gotoXY(25, 1);
+	printf("Input name file for load: ");
+	scanf("%s", file);
+	
+	if(read_file(file)) {
+		free(file);
+		return;
+	}
+
+	int i = 0;
+	while (file[i] != '.') i++;
+
+	file[i + 1] = 'o';
+	file[i + 2] = '\0';
+
+	sc_memoryLoad(file);
 	pa_resetTerm();
+	free(file);
 }
 
 void pa_keySave()
 {
-	sc_memorySave("Test.bin");
+	char *file = malloc(sizeof(char) * 35);
+	
+	mt_gotoXY(25, 1);
+	printf("Input name file for save: ");
+	scanf("%s", file);
+
+	sc_memorySave(file);
+	pa_resetTerm();
+	free(file);
 }
 
 void pa_keyRun()

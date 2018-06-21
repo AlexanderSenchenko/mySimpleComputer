@@ -7,7 +7,7 @@ int read_file(char *file_name)
 
 	FILE *in = fopen(file_name, "r");
 	if(!in) {
-		printf("No such file.");
+		printf("No such file\n");
 		return 1;
 	}
 
