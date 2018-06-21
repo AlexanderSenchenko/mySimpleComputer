@@ -51,8 +51,7 @@ int CU()
 					sc_regSet(M, 1);
 					break;
 				}
-
-				instructionCounter = operand;
+				instructionCounter = --operand;
 				break;
 			case JNEG:
 				break;
@@ -63,6 +62,12 @@ int CU()
 				return 1;
 				break;
 		}
+	}
+
+	if (instructionCounter + 1 < SIZE) {
+		instructionCounter++;
+	} else {
+		sc_regSet(M, 1);
 	}
 	
 	return 0;

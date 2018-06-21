@@ -78,7 +78,7 @@ int read_string(char *str, int len, int ind)
 	value = (value | command) << 7;
 	value |= operand;
 	sc_memorySet(ind, value);
-	printf("%X\n", value);
+	// printf("%X\n", value);
 
 	free(buf);
 

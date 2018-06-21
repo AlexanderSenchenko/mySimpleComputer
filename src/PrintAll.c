@@ -31,7 +31,7 @@ int pa_ProgRun()
 	pa_printAllBox();
 	pa_resetTerm();
 
-	#if 0
+	#if 1
 	sc_memorySet(99, 100);
 	sc_memorySet(98, 2);
 
@@ -40,7 +40,7 @@ int pa_ProgRun()
 	value |= 99;
 	sc_memorySet(0, value);
 
-	#if 0
+	#if 1
 	// Test DIVIDE
 	value = 0;
 	value = (value | 0x32) << 7;
@@ -48,7 +48,7 @@ int pa_ProgRun()
 	sc_memorySet(1, value);
 	#endif
 
-	#if 1
+	#if 0
 	// Test JUMP
 	value = 0;
 	value = (value | 0x40) << 7;
@@ -146,8 +146,12 @@ int pa_resetTerm()
 	pa_printFlags();
 	pa_printCase();
 
+	mt_gotoXY(24, 1);
+	printf("Input\\Output:");
+
 	#if 1
-	mt_gotoXY(23, 1);
+	// 23-24 для input
+	mt_gotoXY(25, 1);
 	printf("__________________________________\n");
 	printf("__________________________________\n");
 	printf("__________________________________\n");
@@ -163,7 +167,7 @@ int pa_resetTerm()
 
 	pa_getXY(&x, &y);
 
-	mt_gotoXY(24, 1);
+	mt_gotoXY(26, 1);
 	printf("y = %d\n", y);
 	printf("x = %d\n", x);
 	// printf("y_term(conv) = %d\n", y + 2);
@@ -173,7 +177,7 @@ int pa_resetTerm()
 	// printf("Size memory = %d\n", SIZE);
 	#endif
 
-	mt_gotoXY(31, 1);
+	mt_gotoXY(33, 1);
 	fflush(stdout);
 	return 0;
 }
@@ -235,8 +239,8 @@ void pa_keyRun()
 	while (!CU()) {
 		pa_resetTerm();
 
-		if ((instructionCounter + 1) < SIZE) 
-			instructionCounter++;
+		// if ((instructionCounter + 1) < SIZE) 
+		// 	instructionCounter++;
 
 		sleep(1);	// "Signal"
 		// pa_resetTerm();
@@ -257,9 +261,11 @@ void pa_keyStep()
 
 	CU();
 	pa_resetTerm();
-
-	if ((instructionCounter + 1) < SIZE) 
-			instructionCounter++;
+	
+	// Убарать инкрементирование из run и step
+	// в cpu
+	// if ((instructionCounter + 1) < SIZE) 
+	// 		instructionCounter++;
 	
 	// sleep(1);
 	pa_resetTerm();
