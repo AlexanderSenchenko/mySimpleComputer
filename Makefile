@@ -11,12 +11,16 @@ SRC_EXT := c
 CC := gcc
 
 COMPILE_FLAGS := -std=c99 -Wall -Werror -O0 -g
+LIB_FLAG = -L
 
 SRC_FILE := $(wildcard $(SRC_PATH)/*.c)
 
-# LIB := $(patsubst %.$(SRC_EXT), %.a, $(SRC_FILE))
-# LIB := $(notdir $(LIB))
-# LIB := $(addprefix $(LIB_PATH)/lib, $(LIB))
+LIB := $(patsubst %.$(SRC_EXT), %.a, $(SRC_FILE))
+LIB := $(notdir $(LIB))
+LIB := $(addprefix $(LIB_PATH)/lib, $(LIB))
+
+LIB_CMPL := $(patsubst lib%.a, %, $(notdir $(LIB)))
+LIB_CMPL := $(addprefix -l, $(LIB_CMPL))
 
 OBJECTS := $(patsubst %.$(SRC_EXT), %.o, $(SRC_FILE))
 OBJECTS := $(notdir $(OBJECTS))
@@ -24,19 +28,26 @@ OBJECTS := $(addprefix $(BUILD_PATH)/, $(OBJECTS))
 
 .PHONY: all
 all: dirs $(BIN_NAME)
+	# $(OBJECTS) TestCompil
 
 $(BIN_NAME): $(OBJECTS)
 	$(CC) $(COMPILE_FLAGS) $^ -o $(BIN_PATH)/$@
 
-# .PHONY: testLib
-# testLib: $(LIB)
-# 	@echo $(LIB)
-# 	@echo $(notdir $(LIB))
-# 	@echo $(patsubst %.a, %, $(notdir $(LIB)))
-# 	@echo $(addprefix -l, $(patsubst %.a, %, $(notdir $(LIB))))
+.PHONY: TestCompil
+TestCompil: $(LIB)
+	$(CC) $(COMPILE_FLAGS) $(LIB_FLAG)$(LIB_PATH) $(LIB_CMPL) -o $(BIN_PATH)/$@
 
-# $(LIB_PATH)/lib%.a:
-# 	@echo $@
+.PHONY: testLib
+testLib: $(LIB)
+	@echo $(LIB)
+	@echo $(notdir $(LIB))
+	@echo $(patsubst lib%.a, %, $(notdir $(LIB)))
+	@echo $(addprefix -l, $(patsubst lib%.a, %, $(notdir $(LIB))))
+
+$(LIB_PATH)/lib%.a: $(BUILD_PATH)/%.o
+	@echo $@
+	ar rcs $@ $^
+	ranlib $@
 
 VPATH := $(INCLUDE_PATH)
 $(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
