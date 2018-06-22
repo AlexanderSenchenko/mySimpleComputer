@@ -5,6 +5,8 @@ int read_file(char *file_name)
 	char *buf = NULL;
 	size_t len = 0;
 
+	// printf("%s\n", file_name);
+
 	FILE *in = fopen(file_name, "r");
 	if(!in) {
 		printf("No such file\n");
@@ -16,13 +18,10 @@ int read_file(char *file_name)
 	for (int i = 0; getline(&buf, &len, in) != -1; i++) {
 		if (read_string(buf, len, i))
 			return 1;
-		// printf("\n");
 	}
 
 	sc_memorySave("test.o");
 	sc_memoryLoad("test.o");
-
-	// sc_memoryInit();
 
 	fclose(in);
 

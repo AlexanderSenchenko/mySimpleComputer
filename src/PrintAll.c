@@ -17,6 +17,7 @@ int bcintD [2] = {1111637504, 4080194};
 int bcintE [2] = {2114092544, 8258050};
 int bcintF [2] = {33717760, 131646};
 int bcintp [2] = {2115508224, 1579134};
+int bcintm [2] = {2113929216, 126};
 
 int pa_ProgRun()
 {
@@ -29,10 +30,14 @@ int pa_ProgRun()
 
 	pa_initComp();
 	pa_printAllBox();
+
+	pa_printAccumulator();
+	pa_printInstructionCounter();
+	
 	pa_resetTerm();
 
 	#if 1
-	sc_memorySet(99, 100);
+	sc_memorySet(99, -100);
 	sc_memorySet(98, 2);
 
 	int value = 0;
@@ -77,8 +82,31 @@ int pa_ProgRun()
 	sc_memorySet(10, value);
 	#endif
 
+	#if 1
+	// Test read
+	value = 0;
+	value = (value | 0x10) << 7;
+	value |= 97;
+	sc_memorySet(0, value);
+	#endif
+
+	#if 1
+	// Test write
+	value = 0;
+	value = (value | 0x11) << 7;
+	value |= 99;
+	sc_memorySet(1, value);
+	#endif
+
 	pa_resetTerm();
 	#endif
+
+	// for (int i = 0; i < 10; i++) {
+	// 	for (int j = 0; j < 10; j++) {
+	// 		printf("%d ", memory[i * 10 + j]);
+	// 	}
+	// 	printf("\n");
+	// }
 
 	#if 1
 	while (key != key_q) {
@@ -104,8 +132,10 @@ int pa_ProgRun()
 				pa_keyReset();
 				break;
 			case key_f5:
+				pa_keyF5();
 				break;
 			case key_f6:
+				pa_keyF6();
 				break;
 			case key_up:
 				pa_moveUp();
@@ -119,12 +149,6 @@ int pa_ProgRun()
 			case key_left:
 				pa_moveLeft();
 				break;
-			// case key_f:
-			// 	value = 0;
-			// 	sc_memoryGet(y * 10 + x, &value);
-			// 	if (sc_memorySet(y * 10 + x, 100 + value) == 1)
-			// 		sc_regSet(P, 1);
-			// 	break;
 			default:
 				pa_keyNumber(key);
 				break;
@@ -140,14 +164,15 @@ int pa_resetTerm()
 {
 	pa_printMemory();
 	pa_resetBGColor();
-	pa_printAccumulator();
-	pa_printInstructionCounter();
+	// pa_printAccumulator();
+	// pa_printcoord();
 	pa_printOperation();
 	pa_printFlags();
 	pa_printCase();
 
 	mt_gotoXY(24, 1);
-	printf("Input\\Output:");
+	printf("Input\\Output: ");
+	mt_gotoXY(24, 14);
 
 	#if 1
 	mt_gotoXY(25, 1);
@@ -169,7 +194,7 @@ int pa_resetTerm()
 	printf("x = %d\n", x);
 	// printf("y_term(conv) = %d\n", y + 2);
 	// printf("x_term(conv) = %d\n", 6 * (1 + x));
-	printf("instrCount = %d\n", instructionCounter);
+	printf("instrCount = %d\n", coord);
 	printf("instrCount(conv) = %d\n", y * 10 + x);
 	// printf("Size memory = %d\n", SIZE);
 	#endif
@@ -184,7 +209,8 @@ int pa_initComp()
 	sc_memoryInit();
 	sc_regInit();
 	accumulator = 0;
-	instructionCounter = 0;
+	coord = 0;
+	coord = 0;
 	return 0;
 }
 
@@ -207,24 +233,23 @@ int pa_printAllBox()
 //////////////////////////////
 void pa_getXY(int *x, int *y)
 {
-	*x = instructionCounter % 10;
-	*y = instructionCounter / 10;
+	*x = coord % 10;
+	*y = coord / 10;
 }
 
 //////////////////////////////
 void pa_keyLoad()
 {
-	char *file = malloc(sizeof(char) * 35);
+	char file[35] = { 0 };
 
 	mt_gotoXY(25, 1);
 	printf("Input name file for load: ");
+	fflush(stdout);
 	scanf("%s", file);
 	
-	if(read_file(file)) {
-		free(file);
+	if(read_file(file))
 		return;
-	}
-
+	
 	int i = 0;
 	while (file[i] != '.') i++;
 
@@ -233,12 +258,11 @@ void pa_keyLoad()
 
 	sc_memoryLoad(file);
 	pa_resetTerm();
-	free(file);
 }
 
 void pa_keySave()
 {
-	char *file = malloc(sizeof(char) * 35);
+	char file[35] = { 0 };
 	
 	mt_gotoXY(25, 1);
 	printf("Input name file for save: ");
@@ -246,7 +270,6 @@ void pa_keySave()
 
 	sc_memorySave(file);
 	pa_resetTerm();
-	free(file);
 }
 
 void pa_keyRun()
@@ -255,18 +278,14 @@ void pa_keyRun()
 
 	sc_regSet(T, 1);
 
-	instructionCounter = 0;
+	coord = 0;
 	
 	pa_getXY(&x, &y);
 
 	while (!CU()) {
 		pa_resetTerm();
 
-		// if ((instructionCounter + 1) < SIZE) 
-		// 	instructionCounter++;
-
 		sleep(1);	// "Signal"
-		// pa_resetTerm();
 	}
 
 	// sc_regSet(T, 0);
@@ -284,12 +303,7 @@ void pa_keyStep()
 
 	CU();
 	pa_resetTerm();
-	
-	// Убарать инкрементирование из run и step
-	// в cpu
-	// if ((instructionCounter + 1) < SIZE) 
-	// 		instructionCounter++;
-	
+
 	// sleep(1);
 	pa_resetTerm();
 }
@@ -298,6 +312,22 @@ void pa_keyReset()
 {
 	pa_initComp();
 	pa_resetTerm();
+}
+
+void pa_keyF5()
+{
+	sc_memoryGet(coord, &accumulator);
+	pa_printAccumulator();
+	mt_gotoXY(33, 1);
+	fflush(stdout);
+}
+
+void pa_keyF6()
+{
+	instructionCounter = coord;
+	pa_printInstructionCounter();
+	mt_gotoXY(33, 1);
+	fflush(stdout);
 }
 
 void pa_keyNumber(enum keys key)
@@ -311,7 +341,7 @@ void pa_keyNumber(enum keys key)
 		if (sc_memorySet(y * 10 + x, key + value) == 1)
 			sc_regSet(P, 1);
 		
-		instructionCounter = y * 10 + x;
+		coord = y * 10 + x;
 		pa_resetTerm();
 	}
 }
@@ -328,7 +358,7 @@ void pa_moveUp()
 		pa_setBGColor(1);
 	}
 	
-	instructionCounter = y * 10 + x;
+	coord = y * 10 + x;
 	pa_resetTerm();
 }
 
@@ -343,7 +373,7 @@ void pa_moveDown()
 		pa_setBGColor(1);
 	}
 	
-	instructionCounter = y * 10 + x;
+	coord = y * 10 + x;
 	pa_resetTerm();
 }
 
@@ -361,7 +391,7 @@ void pa_moveRight()
 	}
 	pa_setBGColor(1);
 	
-	instructionCounter = y * 10 + x;
+	coord = y * 10 + x;
 	pa_resetTerm();
 }
 
@@ -379,7 +409,7 @@ void pa_moveLeft()
 	}
 	pa_setBGColor(1);
 	
-	instructionCounter = y * 10 + x;
+	coord = y * 10 + x;
 	pa_resetTerm();
 }
 
@@ -400,12 +430,23 @@ int pa_setBGColor(int ind)
 	if (ind == 1) {
 		mt_ssetbgcolor(cyan);
 		mt_gotoXY(y + 2, (6 + 6 * x) - 4);
-		printf("+%.4X", memory[instructionCounter]);
+		
+		if (memory[coord] < 0) {
+			printf("-%.4X", -memory[coord]);
+		} else {
+			printf("+%.4X", memory[coord]);
+		}
+		
 		mt_stopcolor();
 	} else if (ind == 0) {
 		mt_stopcolor();
 		mt_gotoXY(y + 2, (6 + 6 * x) - 4);
-		printf("+%.4X", memory[instructionCounter]);
+		
+		if (memory[coord] < 0) {
+			printf("-%.4X", -memory[coord]);
+		} else {
+			printf("+%.4X", memory[coord]);
+		}
 	} else {
 		return 1;
 	}
@@ -419,7 +460,11 @@ int pa_printMemory()
 		for (int j = 0; j < 10; j++) {
 			if (j != 0)
 				printf(" ");
-			printf("+%.4X", memory[i * 10 + j]);
+			if (memory[i * 10 + j] < 0) {
+				printf("-%.4X", -memory[i * 10 + j]);
+			} else {
+				printf("+%.4X", memory[i * 10 + j]);
+			}
 		}
 	}
 	return 0;
@@ -428,14 +473,18 @@ int pa_printMemory()
 int pa_printAccumulator()
 {
 	mt_gotoXY(2, 70);
-	printf("+%.4x", accumulator);
+	if (accumulator < 0) {
+		printf("-%.4x", -accumulator);
+	} else {
+		printf("+%.4x", accumulator);
+	}
 	return 0;
 }
 
 int pa_printInstructionCounter()
 {
 	mt_gotoXY(5, 70);
-	printf("+%.4X", instructionCounter);
+	printf("+%.4X", coord);
 	return 0;
 }
 
@@ -479,8 +528,6 @@ int pa_printFlags()
 
 int pa_printCase()
 {
-	bc_printbigchar(bcintp, BOX_ROW_MEMORY + 2, 2, purple, cyan);
-	
 	int value;
 	int rank[4];
 	int x, y;
@@ -488,6 +535,13 @@ int pa_printCase()
 	pa_getXY(&x, &y);
 	
 	sc_memoryGet(y * 10 + x, &value);
+
+	if (value < 0) {
+		bc_printbigchar(bcintm, BOX_ROW_MEMORY + 2, 2, purple, cyan);
+		value *= -1;
+	} else {
+		bc_printbigchar(bcintp, BOX_ROW_MEMORY + 2, 2, purple, cyan);
+	}
 
 	for (int i = 0; i < 4; ++i) {
 		rank[i] = value % 16;
@@ -625,7 +679,7 @@ int pa_printKeys()
 	mt_gotoXY(19, 48);
 	printf("F5  - accumulator");
 	mt_gotoXY(20, 48);
-	printf("F6  - instructionCounter");
+	printf("F6  - coord");
 	mt_gotoXY(21, 48);
 	printf("q   - exit");
 	return 0;

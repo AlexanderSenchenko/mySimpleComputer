@@ -7,6 +7,7 @@
 
 int accumulator;
 int instructionCounter;
+int coord;
 
 #define READ 0x10
 #define WRITE 0x11
@@ -23,6 +24,8 @@ int instructionCounter;
 #define JNEG 0x41
 #define JZ 0x42
 #define HALT 0x43
+
+#define JNP 0x59
 
 int CU();
 int ALU(int command, int operand);

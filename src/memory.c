@@ -14,8 +14,8 @@ int sc_memorySet(int address, int value)
 	if (address >= SIZE || address < 0)
 		return 1;	// выход за границы памяти
 
-	if (value > 0xFFFF || value < 0)
-		return 1;
+	// if (value > 0xFFFF || value < 0)
+	// 	return 1;
 
 	memory[address] = value;
 	

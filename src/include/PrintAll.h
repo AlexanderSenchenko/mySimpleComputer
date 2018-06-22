@@ -15,6 +15,8 @@
 #define MINI_BOX_ROW 3
 #define MINI_BOX_COLUMN 22
 
+int coord;
+
 int pa_ProgRun();
 
 //////////////////////////////
@@ -31,6 +33,8 @@ void pa_keySave();
 void pa_keyRun();
 void pa_keyStep();
 void pa_keyReset();
+void pa_keyF5();
+void pa_keyF6();
 void pa_keyNumber(enum keys key);
 
 //////////////////////////////
@@ -41,7 +45,7 @@ void pa_moveLeft();
 
 //////////////////////////////
 int pa_resetBGColor();
-int pa_setBGColor();
+int pa_setBGColor(int ind);
 
 int pa_printMemory();
 int pa_printAccumulator();

@@ -2,7 +2,7 @@
 
 int CU()
 {
-	int value;
+	int value = 0;
 	int command;
 	int operand;
 
@@ -36,8 +36,26 @@ int CU()
 		switch (command)
 		{
 			case READ:
+				mt_gotoXY(24, 14);
+				for (int i = 0; i < 70; i++) {
+					printf(" ");
+				}
+				printf("\n");
+
+				mt_gotoXY(24, 15);
+				scanf("%d", &value);
+				sc_memorySet(operand, value);
 				break;
 			case WRITE:
+				mt_gotoXY(24, 14);
+				for (int i = 0; i < 70; i++) {
+					printf(" ");
+				}
+				printf("\n");
+
+				sc_memoryGet(operand, &value);
+				mt_gotoXY(24, 15);
+				printf("%d\n", value);
 				break;
 			case LOAD:
 				sc_memoryGet(operand, &accumulator);
@@ -60,6 +78,8 @@ int CU()
 			case HALT:
 				sc_regSet(T, 0);
 				return 1;
+				break;
+			case JNP:
 				break;
 		}
 	}
