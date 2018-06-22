@@ -37,7 +37,7 @@ int pa_ProgRun()
 	pa_resetTerm();
 
 	#if 1
-		sc_memorySet(99, -100);
+		sc_memorySet(99, -99);
 		sc_memorySet(98, 2);
 
 		int value = 0;
@@ -53,10 +53,34 @@ int pa_ProgRun()
 			sc_memorySet(1, value);
 		#endif
 
-		#if 1
+		#if 0
 			// Test JNEG
 			value = 0;
 			value = (value | 0x41) << 7;
+			value |= 3;
+			sc_memorySet(1, value);
+		#endif
+
+		#if 0
+			// Test JZ
+			value = 0;
+			value = (value | 0x42) << 7;
+			value |= 3;
+			sc_memorySet(1, value);
+		#endif
+
+		#if 0
+			// Test JZ
+			value = 0;
+			value = (value | 0x42) << 7;
+			value |= 3;
+			sc_memorySet(1, value);
+		#endif
+
+		#if 0
+			// Test JMP
+			value = 0;
+			value = (value | 0x59) << 7;
 			value |= 3;
 			sc_memorySet(1, value);
 		#endif
@@ -83,7 +107,7 @@ int pa_ProgRun()
 		sc_memorySet(3, value);
 
 		#if 0
-			// Test
+			// Test хз чего непомню
 			value = 0;
 			value = (value | 0x10) << 7;
 			value |= 99;
@@ -91,7 +115,7 @@ int pa_ProgRun()
 		#endif
 
 		#if 0
-			// Test read
+			// Test READ
 			value = 0;
 			value = (value | 0x10) << 7;
 			value |= 97;
@@ -99,7 +123,7 @@ int pa_ProgRun()
 		#endif
 
 		#if 0
-			// Test write
+			// Test WRITE
 			value = 0;
 			value = (value | 0x11) << 7;
 			value |= 99;
