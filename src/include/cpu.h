@@ -7,7 +7,6 @@
 
 int accumulator;
 int instructionCounter;
-int coord;
 
 #define READ 0x10
 #define WRITE 0x11

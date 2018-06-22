@@ -37,68 +37,76 @@ int pa_ProgRun()
 	pa_resetTerm();
 
 	#if 1
-	sc_memorySet(99, -100);
-	sc_memorySet(98, 2);
+		sc_memorySet(99, -100);
+		sc_memorySet(98, 2);
 
-	int value = 0;
-	value = (value | 0x20) << 7;
-	value |= 99;
-	sc_memorySet(0, value);
+		int value = 0;
+		value = (value | 0x20) << 7;
+		value |= 99;
+		sc_memorySet(0, value);
 
-	#if 1
-	// Test DIVIDE
-	value = 0;
-	value = (value | 0x32) << 7;
-	value |= 98;
-	sc_memorySet(1, value);
-	#endif
+		#if 0
+			// Test DIVIDE
+			value = 0;
+			value = (value | 0x32) << 7;
+			value |= 98;
+			sc_memorySet(1, value);
+		#endif
 
-	#if 0
-	// Test JUMP
-	value = 0;
-	value = (value | 0x40) << 7;
-	value |= 12;
-	sc_memorySet(1, value);
+		#if 1
+			// Test JNEG
+			value = 0;
+			value = (value | 0x41) << 7;
+			value |= 3;
+			sc_memorySet(1, value);
+		#endif
 
-	value = 0;
-	value = (value | 0x43) << 7;
-	sc_memorySet(13, value);
-	#endif
+		#if 0
+			// Test JUMP
+			value = 0;
+			value = (value | 0x40) << 7;
+			value |= 12;
+			sc_memorySet(1, value);
 
-	value = 0;
-	value = (value | 0x21) << 7;
-	value |= 96;
-	sc_memorySet(2, value);
+			value = 0;
+			value = (value | 0x43) << 7;
+			sc_memorySet(13, value);
+		#endif
 
-	value = 0;
-	value = (value | 0x43) << 7;
-	sc_memorySet(3, value);
+		value = 0;
+		value = (value | 0x21) << 7;
+		value |= 96;
+		sc_memorySet(2, value);
 
-	#if 0
-	// Test
-	value = 0;
-	value = (value | 0x10) << 7;
-	value |= 99;
-	sc_memorySet(10, value);
-	#endif
+		value = 0;
+		value = (value | 0x43) << 7;
+		sc_memorySet(3, value);
 
-	#if 1
-	// Test read
-	value = 0;
-	value = (value | 0x10) << 7;
-	value |= 97;
-	sc_memorySet(0, value);
-	#endif
+		#if 0
+			// Test
+			value = 0;
+			value = (value | 0x10) << 7;
+			value |= 99;
+			sc_memorySet(10, value);
+		#endif
 
-	#if 1
-	// Test write
-	value = 0;
-	value = (value | 0x11) << 7;
-	value |= 99;
-	sc_memorySet(1, value);
-	#endif
+		#if 0
+			// Test read
+			value = 0;
+			value = (value | 0x10) << 7;
+			value |= 97;
+			sc_memorySet(0, value);
+		#endif
 
-	pa_resetTerm();
+		#if 0
+			// Test write
+			value = 0;
+			value = (value | 0x11) << 7;
+			value |= 99;
+			sc_memorySet(1, value);
+		#endif
+
+		pa_resetTerm();
 	#endif
 
 	// for (int i = 0; i < 10; i++) {
@@ -283,6 +291,11 @@ void pa_keyRun()
 	pa_getXY(&x, &y);
 
 	while (!CU()) {
+		coord = instructionCounter;
+		pa_printAccumulator();
+		pa_printInstructionCounter();
+		// pa_keyF6();
+		
 		pa_resetTerm();
 
 		sleep(1);	// "Signal"
@@ -302,6 +315,10 @@ void pa_keyStep()
 	pa_getXY(&x, &y);
 
 	CU();
+	coord = instructionCounter;
+	pa_printAccumulator();
+	pa_printInstructionCounter();
+	// pa_keyF6();
 	pa_resetTerm();
 
 	// sleep(1);

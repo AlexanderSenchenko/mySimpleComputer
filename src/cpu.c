@@ -72,14 +72,25 @@ int CU()
 				instructionCounter = --operand;
 				break;
 			case JNEG:
+
+				if (accumulator < 0) {
+					if (operand >= SIZE || operand < 0) {
+						sc_regSet(M, 1);
+						break;
+					}
+					instructionCounter = --operand;
+				}
+
 				break;
 			case JZ:
+
 				break;
 			case HALT:
 				sc_regSet(T, 0);
 				return 1;
 				break;
 			case JNP:
+
 				break;
 		}
 	}
@@ -117,10 +128,11 @@ int ALU(int command, int operand)
 			if (value == 0) {
 				sc_regSet(O, 1);
 				break;
-			} else if (accumulator / value < 0) {
-				sc_regSet(P, 1);
-				break;
-			}
+			} 
+			// else if (accumulator / value < 0) {
+			// 	sc_regSet(P, 1);
+			// 	break;
+			// }
 			accumulator /= value;
 			break;
 		case MUL:
