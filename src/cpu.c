@@ -62,7 +62,7 @@ int CU()
 				break;
 			case STORE:
 				sc_memorySet(operand, accumulator);
-				accumulator = 0;
+				// accumulator = 0;
 				break;
 			case JUMP:
 				if (operand >= SIZE || operand < 0) {

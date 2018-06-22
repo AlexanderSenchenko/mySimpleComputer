@@ -36,7 +36,7 @@ int pa_ProgRun()
 	
 	pa_resetTerm();
 
-	#if 1
+	#if 0
 		sc_memorySet(99, -99);
 		sc_memorySet(98, 2);
 
@@ -139,6 +139,8 @@ int pa_ProgRun()
 	// 	}
 	// 	printf("\n");
 	// }
+
+	// read_file("fact.asm");
 
 	#if 1
 	while (key != key_q) {
@@ -288,6 +290,7 @@ void pa_keyLoad()
 	file[i + 1] = 'o';
 	file[i + 2] = '\0';
 
+	sc_memorySave(file);
 	sc_memoryLoad(file);
 	pa_resetTerm();
 }
@@ -515,9 +518,9 @@ int pa_printAccumulator()
 {
 	mt_gotoXY(2, 70);
 	if (accumulator < 0) {
-		printf("-%.4x", -accumulator);
+		printf("-%.4X", -accumulator);
 	} else {
-		printf("+%.4x", accumulator);
+		printf("+%.4X", accumulator);
 	}
 	return 0;
 }

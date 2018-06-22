@@ -18,10 +18,12 @@ int read_file(char *file_name)
 	for (int i = 0; getline(&buf, &len, in) != -1; i++) {
 		if (read_string(buf, len, i))
 			return 1;
+		// sleep(1);
 	}
 
-	sc_memorySave("test.o");
-	sc_memoryLoad("test.o");
+	// sc_memorySave("test.o");
+	// sc_memoryLoad("test.o");
+	// printf("End read file\n");
 
 	fclose(in);
 
@@ -42,7 +44,7 @@ int read_string(char *str, int len, int ind)
 		if (!isdigit(str[i]))
 			return 1;
 	}
-	// printf("%d\n", ind);
+	// printf("%d\t", ind);
 
 	skip_space(str, &lb, &rb, len);
 
@@ -69,6 +71,7 @@ int read_string(char *str, int len, int ind)
 			return 1;
 	}
 	operand = get_operand(str, buf, lb, rb);
+	// printf("%d\n", operand);
 
 	skip_space(str, &lb, &rb, len);
 
@@ -137,7 +140,7 @@ int get_command(char *str, char *buf, int lb, int rb)
 	buf = strcpy(buf, str);
 	buf[rb] = '\0';
 
-	// printf("%s\n", &buf[lb]);
+	// printf("%s\t", &buf[lb]);
 
 	if (!strcmp(&buf[lb], "READ"))
 		return READ;
