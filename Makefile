@@ -10,7 +10,7 @@ SRC_EXT := c
 
 CC := gcc
 
-COMPILE_FLAGS := -std=c99 -Wall -Werror -O0 -g
+COMPILE_FLAGS := -std=c99 -Wall -O0 -g #-Werror
 LIB_FLAG = -L
 
 SRC_FILE := $(wildcard $(SRC_PATH)/*.c)
@@ -28,31 +28,25 @@ OBJECTS := $(addprefix $(BUILD_PATH)/, $(OBJECTS))
 
 .PHONY: all
 all: dirs $(BIN_NAME)
-	# $(OBJECTS) TestCompil
+# TestCompil
 
-$(BIN_NAME): $(OBJECTS)
-	$(CC) $(COMPILE_FLAGS) $^ -o $(BIN_PATH)/$@
+$(BIN_NAME): cost $(LIB)
+	$(CC) $(COMPILE_FLAGS) $(LIB_FLAG)$(LIB_PATH) $(LIB_CMPL) -o $(BIN_PATH)/$(BIN_NAME)
+# $(OBJECTS)
+# $(CC) $(COMPILE_FLAGS) $^ -o $(BIN_PATH)/$@
 
-.PHONY: TestCompil
-TestCompil: $(LIB)
-	$(CC) $(COMPILE_FLAGS) $(LIB_FLAG)$(LIB_PATH) $(LIB_CMPL) -o $(BIN_PATH)/$@
-
-.PHONY: testLib
-testLib: $(LIB)
-	@echo $(LIB)
-	@echo $(notdir $(LIB))
-	@echo $(patsubst lib%.a, %, $(notdir $(LIB)))
-	@echo $(addprefix -l, $(patsubst lib%.a, %, $(notdir $(LIB))))
+.PHONY: cost
+cost: $(OBJECTS)
+	ar rcs lib/libPrintAll.a $(OBJECTS)
+	ranlib lib/libPrintAll.a
 
 $(LIB_PATH)/lib%.a: $(BUILD_PATH)/%.o
-	@echo $@
 	ar rcs $@ $^
 	ranlib $@
 
 VPATH := $(INCLUDE_PATH)
 $(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
 	$(CC) -MD $(COMPILE_FLAGS) $(addprefix -I, $(INCLUDE_PATH)) -c $< -o $@
-
 include $(wildcard *.d)
 
 .PHONY: dirs
@@ -70,3 +64,10 @@ clean:
 	@rm -rf $(BIN_PATH)
 	@rm -rf $(BUILD_PATH)
 	@rm -rf $(LIB_PATH)
+
+.PHONY: testLib
+testLib: $(LIB)
+	@echo $(LIB)
+	@echo $(notdir $(LIB))
+	@echo $(patsubst lib%.a, %, $(notdir $(LIB)))
+	@echo $(addprefix -l, $(patsubst lib%.a, %, $(notdir $(LIB))))

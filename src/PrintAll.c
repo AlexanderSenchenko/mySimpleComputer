@@ -1,23 +1,23 @@
 #include "PrintAll.h"
 
-int bcint0 [2] = {1717992960, 8283750};
-int bcint1 [2] = {471341056, 3938328};
-int bcint2 [2] = {538983424, 3935292};
-int bcint3 [2] = {2120252928, 8282238};
-int bcint4 [2] = {2120640000, 6316158};
-int bcint5 [2] = {2114092544, 8273984};
-int bcint6 [2] = {33701376, 4071998};
-int bcint7 [2] = {811630080, 396312};
-int bcint8 [2] = {2120646144, 8283750};
-int bcint9 [2] = {2087074816, 3956832};
-int bcintA [2] = {2118269952, 4342338};
-int bcintB [2] = {1044528640, 4080194};
-int bcintC [2] = {37895168, 3949058};
-int bcintD [2] = {1111637504, 4080194};
-int bcintE [2] = {2114092544, 8258050};
-int bcintF [2] = {33717760, 131646};
-int bcintp [2] = {2115508224, 1579134};
-int bcintm [2] = {2113929216, 126};
+static int bcint0 [2] = {1717992960, 8283750};
+static int bcint1 [2] = {471341056, 3938328};
+static int bcint2 [2] = {538983424, 3935292};
+static int bcint3 [2] = {2120252928, 8282238};
+static int bcint4 [2] = {2120640000, 6316158};
+static int bcint5 [2] = {2114092544, 8273984};
+static int bcint6 [2] = {33701376, 4071998};
+static int bcint7 [2] = {811630080, 396312};
+static int bcint8 [2] = {2120646144, 8283750};
+static int bcint9 [2] = {2087074816, 3956832};
+static int bcintA [2] = {2118269952, 4342338};
+static int bcintB [2] = {1044528640, 4080194};
+static int bcintC [2] = {37895168, 3949058};
+static int bcintD [2] = {1111637504, 4080194};
+static int bcintE [2] = {2114092544, 8258050};
+static int bcintF [2] = {33717760, 131646};
+static int bcintp [2] = {2115508224, 1579134};
+static int bcintm [2] = {2113929216, 126};
 
 int pa_ProgRun()
 {

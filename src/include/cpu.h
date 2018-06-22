@@ -1,9 +1,9 @@
 #ifndef CPU_H
 #define CPU_H
 
+#include <stdio.h>
 #include "memory.h"
 #include "myTerm.h"
-#include <stdio.h>
 
 int accumulator;
 int instructionCounter;

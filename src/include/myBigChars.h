@@ -1,11 +1,11 @@
 #ifndef MYBIGCHARS_H
 #define MYBIGCHARS_H
 
-#include "myTerm.h"
 #include <stdio.h>
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include "myTerm.h"
 
 #define BC_ANGLE_LEFT_UP "l"
 #define	BC_ANGLE_LEFT_DOWN "m"
