@@ -15,8 +15,8 @@ int read_file(char *file_name)
 
 	sc_memoryInit();
 
-	for (int i = 0; getline(&buf, &len, in) != -1; i++) {
-		if (read_string(buf, len, i))
+	while (getline(&buf, &len, in) != -1) {
+		if (read_string(buf, len))
 			return 1;
 		// sleep(1);
 	}
@@ -32,7 +32,7 @@ int read_file(char *file_name)
 	return 0;
 }
 
-int read_string(char *str, int len, int ind)
+int read_string(char *str, int len)
 {
 	int value = 0;
 	int command, operand = 0;
@@ -44,8 +44,8 @@ int read_string(char *str, int len, int ind)
 		if (!isdigit(str[i]))
 			return 1;
 	}
+	int ind = get_number(str, buf, lb, rb);
 	// printf("%d\t", ind);
-
 	skip_space(str, &lb, &rb, len);
 
 
@@ -70,12 +70,15 @@ int read_string(char *str, int len, int ind)
 		if (!isdigit(str[i]))
 			return 1;
 	}
-	operand = get_operand(str, buf, lb, rb);
-	// printf("%d\n", operand);
+	operand = get_number(str, buf, lb, rb);
 
 	skip_space(str, &lb, &rb, len);
 
 
+	// printf("%d\n", operand);
+
+	if (command == 1)
+		command = 0;
 
 	value = (value | command) << 7;
 	value |= operand;
@@ -178,7 +181,7 @@ int get_command(char *str, char *buf, int lb, int rb)
 	return 0;
 }
 
-int get_operand(char *str, char *buf, int lb, int rb)
+int get_number(char *str, char *buf, int lb, int rb)
 {
 	buf = strcpy(buf, str);
 	buf[rb] = '\0';
