@@ -37,21 +37,24 @@ int CU()
 		{
 			case READ:
 				mt_gotoXY(24, 14);
-				for (int i = 0; i < 70; i++) {
+				for (int i = 0; i < 70; i++)
 					printf(" ");
-				}
-				printf("\n");
+				// printf("\n");
 
 				mt_gotoXY(24, 15);
 				scanf("%d", &value);
 				sc_memorySet(operand, value);
+
+				mt_gotoXY(24, 14);
+				for (int i = 0; i < 70; i++)
+					printf(" ");
 				break;
 			case WRITE:
 				mt_gotoXY(24, 14);
 				for (int i = 0; i < 70; i++) {
 					printf(" ");
 				}
-				printf("\n");
+				// printf("\n");
 
 				sc_memoryGet(operand, &value);
 				mt_gotoXY(24, 15);
