@@ -5,8 +5,6 @@ int read_file(char *file_name)
 	char *buf = NULL;
 	size_t len = 0;
 
-	// printf("%s\n", file_name);
-
 	FILE *in = fopen(file_name, "r");
 	if(!in) {
 		printf("No such file\n");
@@ -18,12 +16,7 @@ int read_file(char *file_name)
 	while (getline(&buf, &len, in) != -1) {
 		if (read_string(buf, len))
 			return 1;
-		// sleep(1);
 	}
-
-	// sc_memorySave("test.o");
-	// sc_memoryLoad("test.o");
-	// printf("End read file\n");
 
 	fclose(in);
 
@@ -35,7 +28,8 @@ int read_file(char *file_name)
 int read_string(char *str, int len)
 {
 	int value = 0;
-	int command, operand = 0;
+	int ind;
+	int command, operand;
 	int lb = 0, rb = 0;
 	char *buf = malloc(sizeof(buf) * len);
 
@@ -44,24 +38,17 @@ int read_string(char *str, int len)
 		if (!isdigit(str[i]))
 			return 1;
 	}
-	int ind = get_number(str, buf, lb, rb);
-	// printf("%d\t", ind);
+	ind = get_number(str, buf, lb, rb);
 	skip_space(str, &lb, &rb, len);
-
-
 
 	search_space(str, buf, &lb, &rb, len);
 	for (int i = lb; i < rb; i++) {
 		if (!isalpha(str[i]) && str[i] != '=')
 			return 1;
 	}
-
 	if (!(command = get_command(str, buf, lb, rb)))
 		return 1;
-
 	skip_space(str, &lb, &rb, len);
-
-
 
 	search_space(str, buf, &lb, &rb, len);
 	for (int i = lb; i < rb; i++) {
@@ -71,19 +58,15 @@ int read_string(char *str, int len)
 			return 1;
 	}
 	operand = get_number(str, buf, lb, rb);
-
 	skip_space(str, &lb, &rb, len);
 
+	if (command != 1) {
+		sc_commandEncode(command, operand, &value);
+	} else {
+		value |= operand;
+	}
 
-	// printf("%d\n", operand);
-
-	if (command == 1)
-		command = 0;
-
-	value = (value | command) << 7;
-	value |= operand;
 	sc_memorySet(ind, value);
-	// printf("%X\n", value);
 
 	free(buf);
 
@@ -107,7 +90,6 @@ int skip_space(char *str, int *lb, int *rb, int len)
 	} else {
 		printf("\\n\n");
 	}
-	
 	#endif
 
 	return 0;
@@ -143,8 +125,6 @@ int get_command(char *str, char *buf, int lb, int rb)
 	buf = strcpy(buf, str);
 	buf[rb] = '\0';
 
-	// printf("%s\t", &buf[lb]);
-
 	if (!strcmp(&buf[lb], "READ"))
 		return READ;
 	if (!strcmp(&buf[lb], "WRITE"))
@@ -167,12 +147,6 @@ int get_command(char *str, char *buf, int lb, int rb)
 		return JNEG;
 	if (!strcmp(&buf[lb], "JZ"))
 		return JZ;
-	// if (strcmp(&buf[lb], "JC"))
-	// 	return JC;
-	// if (strcmp(&buf[lb], "JB"))
-	// 	return JB;
-	// if (strcmp(&buf[lb], "SET"))
-	// 	return SET;
 	if (!strcmp(&buf[lb], "HALT"))
 		return HALT;
 	if (!strcmp(&buf[lb], "="))
@@ -185,8 +159,5 @@ int get_number(char *str, char *buf, int lb, int rb)
 {
 	buf = strcpy(buf, str);
 	buf[rb] = '\0';
-
-	// printf("%s\n", &buf[lb]);
-
 	return atoi(&buf[lb]);
 }

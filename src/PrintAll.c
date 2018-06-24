@@ -22,11 +22,6 @@ static int bcintm [2] = {2113929216, 126};
 int pa_ProgRun()
 {
 	enum keys key;
-	// int reg_p;
-	// int reg_o;
-	// int reg_m;
-	int reg_t;
-	// int reg_e;
 
 	pa_initComp();
 	pa_printAllBox();
@@ -36,117 +31,8 @@ int pa_ProgRun()
 	
 	pa_resetTerm();
 
-	#if 0
-		sc_memorySet(99, -99);
-		sc_memorySet(98, 2);
-
-		int value = 0;
-		value = (value | 0x20) << 7;
-		value |= 99;
-		sc_memorySet(0, value);
-
-		#if 0
-			// Test DIVIDE
-			value = 0;
-			value = (value | 0x32) << 7;
-			value |= 98;
-			sc_memorySet(1, value);
-		#endif
-
-		#if 0
-			// Test JNEG
-			value = 0;
-			value = (value | 0x41) << 7;
-			value |= 3;
-			sc_memorySet(1, value);
-		#endif
-
-		#if 0
-			// Test JZ
-			value = 0;
-			value = (value | 0x42) << 7;
-			value |= 3;
-			sc_memorySet(1, value);
-		#endif
-
-		#if 0
-			// Test JZ
-			value = 0;
-			value = (value | 0x42) << 7;
-			value |= 3;
-			sc_memorySet(1, value);
-		#endif
-
-		#if 0
-			// Test JMP
-			value = 0;
-			value = (value | 0x59) << 7;
-			value |= 3;
-			sc_memorySet(1, value);
-		#endif
-
-		#if 0
-			// Test JUMP
-			value = 0;
-			value = (value | 0x40) << 7;
-			value |= 12;
-			sc_memorySet(1, value);
-
-			value = 0;
-			value = (value | 0x43) << 7;
-			sc_memorySet(13, value);
-		#endif
-
-		value = 0;
-		value = (value | 0x21) << 7;
-		value |= 96;
-		sc_memorySet(2, value);
-
-		value = 0;
-		value = (value | 0x43) << 7;
-		sc_memorySet(3, value);
-
-		#if 0
-			// Test хз чего непомню
-			value = 0;
-			value = (value | 0x10) << 7;
-			value |= 99;
-			sc_memorySet(10, value);
-		#endif
-
-		#if 0
-			// Test READ
-			value = 0;
-			value = (value | 0x10) << 7;
-			value |= 97;
-			sc_memorySet(0, value);
-		#endif
-
-		#if 0
-			// Test WRITE
-			value = 0;
-			value = (value | 0x11) << 7;
-			value |= 99;
-			sc_memorySet(1, value);
-		#endif
-
-		pa_resetTerm();
-	#endif
-
-	// for (int i = 0; i < 10; i++) {
-	// 	for (int j = 0; j < 10; j++) {
-	// 		printf("%d ", memory[i * 10 + j]);
-	// 	}
-	// 	printf("\n");
-	// }
-
-	// read_file("fact.asm");
-
-	#if 1
 	while (key != key_q) {
-		sc_regGet(T, &reg_t);
-		// if (!reg_t)
-			rk_readkey(&key);
+		rk_readkey(&key);
 
 		switch (key)
 		{
@@ -188,7 +74,6 @@ int pa_ProgRun()
 				break;
 		}
 	}
-	#endif
 
 	return 0;
 }
@@ -198,8 +83,6 @@ int pa_resetTerm()
 {
 	pa_printMemory();
 	pa_resetBGColor();
-	// pa_printAccumulator();
-	// pa_printcoord();
 	pa_printOperation();
 	pa_printFlags();
 	pa_printCase();
@@ -208,30 +91,13 @@ int pa_resetTerm()
 	printf("Input\\Output: ");
 	mt_gotoXY(24, 14);
 
-	#if 1
 	mt_gotoXY(25, 1);
 	for (int i = 0; i < 8; i++) {
 		for (int i = 0; i < 83; i++) {
-			printf("_");
+			printf(" ");
 		}
 		printf("\n");
 	}
-	#endif
-
-	#if 0
-	int x, y;
-
-	pa_getXY(&x, &y);
-
-	mt_gotoXY(26, 1);
-	printf("y = %d\n", y);
-	printf("x = %d\n", x);
-	// printf("y_term(conv) = %d\n", y + 2);
-	// printf("x_term(conv) = %d\n", 6 * (1 + x));
-	printf("instrCount = %d\n", coord);
-	printf("instrCount(conv) = %d\n", y * 10 + x);
-	// printf("Size memory = %d\n", SIZE);
-	#endif
 
 	mt_gotoXY(33, 1);
 	fflush(stdout);
@@ -281,7 +147,7 @@ void pa_keyLoad()
 	fflush(stdout);
 	scanf("%s", file);
 	
-	if(read_file(file))
+	if (read_file(file))
 		return;
 	
 	int i = 0;
@@ -309,26 +175,19 @@ void pa_keySave()
 
 void pa_keyRun()
 {
-	int x, y;
-
 	sc_regSet(T, 1);
 
 	coord = 0;
-	
-	pa_getXY(&x, &y);
 
 	while (!CU()) {
 		coord = instructionCounter;
 		pa_printAccumulator();
 		pa_printInstructionCounter();
-		// pa_keyF6();
 		
 		pa_resetTerm();
 
-		sleep(1);	// "Signal"
+		sleep(1);
 	}
-
-	// sc_regSet(T, 0);
 
 	pa_resetTerm();
 }
@@ -345,10 +204,7 @@ void pa_keyStep()
 	coord = instructionCounter;
 	pa_printAccumulator();
 	pa_printInstructionCounter();
-	// pa_keyF6();
-	pa_resetTerm();
 
-	// sleep(1);
 	pa_resetTerm();
 }
 
@@ -723,7 +579,7 @@ int pa_printKeys()
 	mt_gotoXY(19, 48);
 	printf("F5  - accumulator");
 	mt_gotoXY(20, 48);
-	printf("F6  - coord");
+	printf("F6  - instructionCounter");
 	mt_gotoXY(21, 48);
 	printf("q   - exit");
 	return 0;

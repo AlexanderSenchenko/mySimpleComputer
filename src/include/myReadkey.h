@@ -21,23 +21,13 @@ enum keys {
 	key_r,
 	key_tt,
 	key_i,
-	key_plus,
-	key_minus,
 	key_other,
 	key_q,
-	key_a,
-	key_b,
-	key_c,
-	key_d,
-	key_e,
-	key_f
 };
 
 int rk_readkey(enum keys *key);
 int rk_mytermsave(void);
 int rk_mytermrestore(void);
 int rk_mytermregime(int regime, int vtime, int vmin, int echo, int sigint);
-
-void set_keypress(void);
 
 #endif

@@ -34,12 +34,6 @@ int rk_readkey(enum keys *key)
 		*key = buf[0] - 48;
 	} else if (buf[0] == 'q') {
 		*key = key_q;
-	} else if (buf[0] == '+') {
-		*key = key_plus;
-	} else if (buf[0] == '-') {
-		*key = key_minus;
-	} else if (buf[0] == 'f') {
-		*key = key_f;
 	}  else {
 		*key = key_other;
 	}

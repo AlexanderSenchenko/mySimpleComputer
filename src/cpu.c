@@ -14,24 +14,9 @@ int CU()
 		return 1;
 	}
 
-	#if 0
-	mt_gotoXY(23, 1);
-	printf("Value %d\n", value);
-	printf("Command %.2x\n", command);
-	printf("Operand %.2x\n", operand);
-	#endif
-
 	if (command >= 0x30 && command <= 0x33) {
 		ALU(command, operand);
 	} else {
-		#if 0
-		mt_gotoXY(23, 1);
-		printf("___________________\n");
-		printf("___________________\n");
-		printf("___________________\n");
-		printf("___________________\n");
-		printf("___________________\n");
-		#endif
 
 		switch (command)
 		{
@@ -39,7 +24,6 @@ int CU()
 				mt_gotoXY(24, 14);
 				for (int i = 0; i < 70; i++)
 					printf(" ");
-				// printf("\n");
 
 				mt_gotoXY(24, 15);
 				scanf("%d", &value);
@@ -54,7 +38,6 @@ int CU()
 				for (int i = 0; i < 70; i++) {
 					printf(" ");
 				}
-				// printf("\n");
 
 				sc_memoryGet(operand, &value);
 				mt_gotoXY(24, 15);
@@ -65,7 +48,6 @@ int CU()
 				break;
 			case STORE:
 				sc_memorySet(operand, accumulator);
-				// accumulator = 0;
 				break;
 			case JUMP:
 				if (operand >= SIZE || operand < 0) {
